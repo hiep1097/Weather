@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/it_temp"
+        android:title="Nhiet do"
+        />
+    <item
+        android:id="@+id/it_donvi"
+        android:title="Cai dat don vi"
+        />
+    <item
+        android:id="@+id/it_hinhnen"
+        android:title="Cai dat hinh nen"
+        />
+</menu>
