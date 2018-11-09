@@ -1,4 +1,4 @@
-package com.example.hiephoangvan.wheather.fragments;
+package com.example.hiephoangvan.weather.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.hiephoangvan.wheather.R;
+import com.example.hiephoangvan.weather.R;
 
 public class FragmentToday extends Fragment {
     @Nullable

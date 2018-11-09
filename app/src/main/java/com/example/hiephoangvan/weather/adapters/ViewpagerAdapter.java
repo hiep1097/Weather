@@ -1,11 +1,11 @@
-package com.example.hiephoangvan.wheather.adapters;
+package com.example.hiephoangvan.weather.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.hiephoangvan.wheather.fragments.FragmentHourly;
-import com.example.hiephoangvan.wheather.fragments.FragmentToday;
+import com.example.hiephoangvan.weather.fragments.FragmentHourly;
+import com.example.hiephoangvan.weather.fragments.FragmentToday;
 
 public class ViewpagerAdapter extends FragmentStatePagerAdapter {
     public ViewpagerAdapter(FragmentManager fm) {

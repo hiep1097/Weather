@@ -1,4 +1,4 @@
-package com.example.hiephoangvan.wheather;
+package com.example.hiephoangvan.weather;
 
 import org.junit.Test;
 

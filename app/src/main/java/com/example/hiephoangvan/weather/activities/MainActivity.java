@@ -1,4 +1,4 @@
-package com.example.hiephoangvan.wheather.activities;
+package com.example.hiephoangvan.weather.activities;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,8 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.example.hiephoangvan.wheather.R;
-import com.example.hiephoangvan.wheather.adapters.ViewpagerAdapter;
+import com.example.hiephoangvan.weather.R;
+import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
