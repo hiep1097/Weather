@@ -6,17 +6,19 @@
     >
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_currently_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hourly"
+        android:text="20"
         android:textSize="@dimen/_25ssp"
         android:layout_margin="@dimen/_10sdp"
         />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewHourly"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
+    <TextView
+        android:id="@+id/tv_currently_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="14:16 11/09/2018"
+        android:textSize="@dimen/_25ssp"
+        android:layout_margin="@dimen/_10sdp"
+        />
 </LinearLayout>

@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.hiephoangvan.weather.fragments.FragmentCurrently;
 import com.example.hiephoangvan.weather.fragments.FragmentHourly;
-import com.example.hiephoangvan.weather.fragments.FragmentToday;
 
 public class ViewpagerAdapter extends FragmentStatePagerAdapter {
     public ViewpagerAdapter(FragmentManager fm) {
@@ -17,7 +17,7 @@ public class ViewpagerAdapter extends FragmentStatePagerAdapter {
         Fragment fragment = null;
         switch (position){
             case 0:
-                fragment = new FragmentToday();
+                fragment = new FragmentCurrently();
                 break;
             case 1:
                 fragment = new FragmentHourly();
@@ -36,7 +36,7 @@ public class ViewpagerAdapter extends FragmentStatePagerAdapter {
         String title = "";
         switch (position){
             case 0:
-                title = "Today";
+                title = "Currently";
                 break;
             case 1:
                 title = "Hourly";
