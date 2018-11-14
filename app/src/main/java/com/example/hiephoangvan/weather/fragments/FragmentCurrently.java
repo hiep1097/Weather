@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,17 +28,20 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class FragmentCurrently extends Fragment {
+public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.tv_currently_temp)
     TextView mCurrentTemp;
     @BindView(R.id.tv_currently_time)
     TextView mCurrentTime;
+    @BindView(R.id.refreshlayoutCurrently)
+    SwipeRefreshLayout mRefreshLayout;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_currently,container,false);
         ButterKnife.bind(this,view);
         getCurrentWeather();
+        mRefreshLayout.setOnRefreshListener(this::onRefresh);
         return view;
     }
     public void getCurrentWeather(){
@@ -51,7 +55,13 @@ public class FragmentCurrently extends Fragment {
     public void updateView(CurrentlyWeather currentlyWeather){
         mCurrentTemp.setText(currentlyWeather.getMain().getTemp().toString());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
-        mCurrentTime.setText(dateFormat.format(new Date(currentlyWeather.getDt()*1000L)));
+        mCurrentTime.setText("Cập nhật gần nhất:"+dateFormat.format(new Date(currentlyWeather.getDt()*1000L)));
         Log.d("DT",System.currentTimeMillis()+"");
+    }
+
+    @Override
+    public void onRefresh() {
+        mRefreshLayout.setRefreshing(false);
+        getCurrentWeather();
     }
 }
