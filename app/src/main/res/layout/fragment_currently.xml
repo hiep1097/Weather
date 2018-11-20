@@ -54,7 +54,7 @@
                         android:id="@+id/tv_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mây rải rác"
+                        tools:text="Mây rải rác"
                         app:layout_constraintStart_toStartOf="@+id/tv_currently_temp"
                         app:layout_constraintTop_toBottomOf="@+id/image_weather"
                         android:layout_marginLeft="@dimen/_10sdp"
@@ -77,10 +77,10 @@
                         android:id="@+id/tv_temp_min"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="22"
+                        tools:text="22"
                         app:layout_constraintTop_toBottomOf="@+id/image_weather"
                         app:layout_constraintRight_toLeftOf="@+id/image_up"
-                        android:paddingRight="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_7sdp"
                         android:layout_marginRight="@dimen/_10sdp"
                         android:textSize="@dimen/_15ssp"
                         />
@@ -94,6 +94,7 @@
                         app:layout_constraintRight_toRightOf="@+id/tv_temp_min"
                         app:layout_constraintTop_toTopOf="@+id/tv_temp_min"
                         app:layout_constraintBottom_toTopOf="@id/tv_temp_min"
+                        android:paddingTop="@dimen/_10sdp"
                         />
 
                     <ImageView
@@ -110,10 +111,10 @@
                         android:id="@+id/tv_temp_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="26"
+                        tools:text="26"
                         app:layout_constraintTop_toBottomOf="@+id/image_weather"
                         app:layout_constraintEnd_toEndOf="@id/image_weather"
-                        android:paddingRight="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_7sdp"
                         android:textSize="@dimen/_15ssp"
                         />
 
@@ -126,7 +127,7 @@
                         app:layout_constraintRight_toRightOf="@+id/tv_temp_max"
                         app:layout_constraintTop_toTopOf="@+id/tv_temp_max"
                         app:layout_constraintBottom_toTopOf="@id/tv_temp_max"
-
+                        android:paddingTop="@dimen/_10sdp"
                         />
 
                     <ImageView
@@ -145,7 +146,7 @@
                         android:id="@+id/tv_sunset_sunrise"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
-                        android:text=" Bình minh/Hoàng hôn 6:00/17:00"
+                        tools:text=" Bình minh/Hoàng hôn 6:00/17:00"
                         app:layout_constraintStart_toEndOf="@id/image_sun"
                         app:layout_constraintTop_toBottomOf="@+id/tv_description"
                         android:layout_marginTop="@dimen/_3sdp"
@@ -157,7 +158,7 @@
                         android:id="@+id/image_weather"
                         android:layout_width="@dimen/_80sdp"
                         android:layout_height="@dimen/_80sdp"
-                        android:src="@drawable/ic_01d"
+                        tools:src="@drawable/ic_01d"
                         app:layout_constraintTop_toTopOf="@+id/tv_currently_temp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_currently_temp"
                         app:layout_constraintRight_toRightOf="parent"
@@ -166,7 +167,7 @@
                         android:id="@+id/tv_currently_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cập nhật gần nhất: 14:16 11/09/2018"
+                        tools:text="Cập nhật gần nhất: 14:16 11/09/2018"
                         android:textSize="@dimen/_12ssp"
                         app:layout_constraintStart_toStartOf="@+id/tv_currently_temp"
                         app:layout_constraintTop_toBottomOf="@+id/tv_sunset_sunrise"
@@ -220,7 +221,7 @@
                         android:id="@+id/tv_value_humidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="80%"
+                        tools:text="80%"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:textSize="@dimen/_15ssp"
                         />
@@ -260,7 +261,7 @@
                         android:id="@+id/tv_value_maychephu"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="80%"
+                        tools:text="80%"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/view1"
                         android:layout_marginTop="@dimen/_5sdp"
@@ -302,7 +303,7 @@
                         android:id="@+id/tv_value_tamnhin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10km"
+                        tools:text="10km"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/view2"
                         android:layout_marginTop="@dimen/_5sdp"
@@ -344,7 +345,7 @@
                         android:id="@+id/tv_value_pressure"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1000hPa"
+                        tools:text="1000hPa"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/view3"
                         android:layout_marginTop="@dimen/_5sdp"
@@ -352,6 +353,48 @@
                         />
                     <View
                         android:id="@+id/view4"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#000"
+                        app:layout_constraintTop_toBottomOf="@id/image_pressure"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/image_rain"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_precipitation"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view4"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_rain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lượng mưa"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_value_rain"
+                        app:layout_constraintStart_toEndOf="@+id/image_rain"
+                        app:layout_constraintHorizontal_bias="0.1"
+                        app:layout_constraintTop_toBottomOf="@id/view4"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:textSize="@dimen/_15ssp"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_value_rain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="0mm"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view4"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:textSize="@dimen/_15ssp"
+                        />
+                    <View
+                        android:id="@+id/view5"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="#000"
@@ -389,7 +432,7 @@
                         android:id="@+id/tv_wind_speed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2.6 km/h"
+                        tools:text="2.6 km/h"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/image_wind"
                         app:layout_constraintBottom_toBottomOf="@id/image_wind"
@@ -400,7 +443,7 @@
                         android:id="@+id/tv_wind_deg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Deg: 120"
+                        tools:text="Deg: 120"
                         app:layout_constraintTop_toBottomOf="@id/tv_wind_speed"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:textSize="@dimen/_15ssp"

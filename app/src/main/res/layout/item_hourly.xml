@@ -1,85 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="#ff234769"
-    android:padding="@dimen/_5sdp"
-    >
-
-    <TextView
-        android:id="@+id/tv_hourly_time"
-        android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/ln_thu_ngay"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="17:00"
-        android:textSize="@dimen/_15ssp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-
-    <ImageView
-        android:id="@+id/image_weather"
-        android:layout_width="@dimen/_30sdp"
-        android:layout_height="@dimen/_30sdp"
-        android:src="@drawable/ic_02d"
-        app:layout_constraintStart_toEndOf="@id/tv_hourly_time"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginLeft="@dimen/_15sdp"
-        />
-
-    <TextView
-        android:id="@+id/tv_hourly_temp"
-        android:layout_width="wrap_content"
+        android:background="#14cf78"
+        >
+        <TextView
+            android:id="@+id/tv_thu_ngay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Thứ 4, 21 tháng 11"
+            android:textSize="@dimen/_15ssp"
+            android:layout_margin="@dimen/_10sdp"
+            />
+    </LinearLayout>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="20"
-        android:textSize="@dimen/_15ssp"
-        app:layout_constraintStart_toEndOf="@id/image_weather"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginLeft="@dimen/_20sdp"
-        />
+        android:orientation="vertical"
+        android:background="#ff234769"
+        android:padding="@dimen/_5sdp"
+        >
 
-    <ImageView
-        android:id="@+id/image_luongmua"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
-        android:src="@drawable/ic_precipitation"
-        android:layout_marginLeft="@dimen/_25sdp"
-        app:layout_constraintStart_toEndOf="@id/tv_hourly_temp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        <TextView
+            android:id="@+id/tv_hourly_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="17:00"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
-        />
-    <TextView
-        android:id="@+id/tv_luongmua"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" 40mm"
-        app:layout_constraintStart_toEndOf="@id/image_luongmua"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textSize="@dimen/_15ssp"
-        />
-    <ImageView
-        android:id="@+id/image_tamnhin"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
-        android:src="@drawable/ic_visibility"
-        app:layout_constraintEnd_toStartOf="@id/tv_tamnhin"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-    <TextView
-        android:id="@+id/tv_tamnhin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" 10km"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="@dimen/_15ssp"
-        />
-</android.support.constraint.ConstraintLayout>
+        <ImageView
+            android:id="@+id/image_weather"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:src="@drawable/ic_02d"
+            app:layout_constraintStart_toEndOf="@id/tv_hourly_time"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginLeft="@dimen/_15sdp"
+            />
+
+        <TextView
+            android:id="@+id/tv_hourly_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintStart_toEndOf="@id/image_weather"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_7sdp"
+            />
+
+        <TextView
+            android:id="@+id/tv_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="o"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintRight_toRightOf="@+id/tv_hourly_temp"
+            app:layout_constraintTop_toTopOf="@+id/tv_hourly_temp"
+            app:layout_constraintBottom_toTopOf="@id/tv_hourly_temp"
+            android:paddingTop="@dimen/_7sdp"
+            />
+
+        <ImageView
+            android:id="@+id/image_luongmua"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:src="@drawable/ic_precipitation"
+            android:layout_marginLeft="@dimen/_35sdp"
+            app:layout_constraintStart_toEndOf="@id/tv_hourly_temp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            />
+        <TextView
+            android:id="@+id/tv_luongmua"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 40mm"
+            app:layout_constraintStart_toEndOf="@id/image_luongmua"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="@dimen/_13ssp"
+            />
+        <ImageView
+            android:id="@+id/image_humidity"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:src="@drawable/ic_humidity"
+            app:layout_constraintEnd_toStartOf="@id/tv_humidity"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+        <TextView
+            android:id="@+id/tv_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 96%"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="@dimen/_13ssp"
+            />
+    </android.support.constraint.ConstraintLayout>
+</LinearLayout>

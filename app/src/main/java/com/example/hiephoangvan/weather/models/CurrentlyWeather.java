@@ -25,6 +25,9 @@ public class CurrentlyWeather {
     @SerializedName("wind")
     @Expose
     private Wind wind;
+    @SerializedName("rain")
+    @Expose
+    private Rain rain;
     @SerializedName("clouds")
     @Expose
     private Clouds clouds;
@@ -43,6 +46,14 @@ public class CurrentlyWeather {
     @SerializedName("cod")
     @Expose
     private Integer cod;
+
+    public Rain getRain() {
+        return rain;
+    }
+
+    public void setRain(Rain rain) {
+        this.rain = rain;
+    }
 
     public Coord getCoord() {
         return coord;
