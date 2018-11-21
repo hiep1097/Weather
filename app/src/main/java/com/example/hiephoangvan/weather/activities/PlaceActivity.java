@@ -10,13 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
+import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.PlaceAdapter;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
+import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -33,7 +36,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlaceActivity extends AppCompatActivity{
+public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     String TAG = "PLACE_ACTIVITY";
     PlaceDetectionClient mPlaceDetectionClient;
     private boolean mLocationPermissionGranted;
@@ -52,7 +55,7 @@ public class PlaceActivity extends AppCompatActivity{
         placeDatabase = new PlaceDatabase(this);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
         getLocationPermission();
-        placeAdapter = new PlaceAdapter(list);
+        placeAdapter = new PlaceAdapter(list,this::onClick);
         mRecyclerViewPlace.setAdapter(placeAdapter);
         mRecyclerViewPlace.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         getDeviceLocation();
@@ -154,5 +157,14 @@ public class PlaceActivity extends AppCompatActivity{
                 }
             }
         }
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        UtilPref.setFloat(this, "lat", list.get(position).getLat());
+        UtilPref.setFloat(this, "lon", list.get(position).getLon());
+        UtilPref.setString(this, "address", list.get(position).getAddress());
+        toolbarTitle.setText(list.get(position).getAddress());
+        finish();
     }
 }

@@ -18,6 +18,7 @@ import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.activities.PlaceActivity;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
+import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
 import com.example.hiephoangvan.weather.models.Place;
 
 import java.util.Calendar;
@@ -26,13 +27,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> {
-
+    ItemOnClick mListener;
     private List<Place> list;
     int homePossition=0;
     private Context context;
     PlaceDatabase placeDatabase;
-    public PlaceAdapter(List<Place> list) {
+    public PlaceAdapter(List<Place> list, ItemOnClick mListener) {
         this.list = list;
+        this.mListener = mListener;
     }
 
     @Override
@@ -69,9 +71,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                                 UtilPref.setInt(context,"homePossition",position);
                                 homePossition = position;
                                 notifyDataSetChanged();
-                                UtilPref.setFloat(context,"lat",list.get(position).getLat());
-                                UtilPref.setFloat(context,"lon",list.get(position).getLon());
-                                UtilPref.setString(context,"address",list.get(position).getAddress());
+                                mListener.onClick(v,position);
                                 return true;
                             case R.id.it_delete:
                                 placeDatabase.deletePlace(list.get(position).getId());
@@ -91,9 +91,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UtilPref.setFloat(context,"lat",list.get(position).getLat());
-                UtilPref.setFloat(context,"lon",list.get(position).getLon());
-                UtilPref.setString(context,"address",list.get(position).getAddress());
+                mListener.onClick(v,position);
             }
         });
     }
