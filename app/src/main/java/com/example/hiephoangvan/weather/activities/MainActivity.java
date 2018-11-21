@@ -1,5 +1,6 @@
 package com.example.hiephoangvan.weather.activities;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
@@ -73,5 +75,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.option_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id==R.id.it_location){
+            Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
+            startActivity(intent);
+        }
+        return false;
     }
 }

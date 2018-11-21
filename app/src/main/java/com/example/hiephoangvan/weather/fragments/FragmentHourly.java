@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.Config;
+import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.HourlyAdapter;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
@@ -65,7 +66,9 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
 
     public void getCurrentWeather(){
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-        Observable<CurrentlyWeather> observable = service.getCurrentWeather(Config.ID_HANOI,"metric","vi", Config.API_KEY);
+        Observable<CurrentlyWeather> observable = service.getCurrentWeather(
+                UtilPref.getFloat(getContext(),"lat",0),
+                UtilPref.getFloat(getContext(),"lon",0),"metric","vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateView(response),
@@ -74,7 +77,9 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
 
     public void getHourlyWeather(){
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-        Observable<HourlyWeather> observable = service.getHourlyWeather(Config.ID_HANOI,"metric", "vi", Config.API_KEY);
+        Observable<HourlyWeather> observable = service.getHourlyWeather(
+                UtilPref.getFloat(getContext(),"lat",0),
+                UtilPref.getFloat(getContext(),"lon",0),"metric","vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateList(response),

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.Config;
+import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.models.CurrentlyWeather;
@@ -63,7 +64,9 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     }
     public void getCurrentWeather(){
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-        Observable<CurrentlyWeather> observable = service.getCurrentWeather(Config.ID_HANOI,"metric","vi", Config.API_KEY);
+        Observable<CurrentlyWeather> observable = service.getCurrentWeather(
+                UtilPref.getFloat(getContext(),"lat",0),
+                UtilPref.getFloat(getContext(),"lon",0),"metric","vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateView(response),
@@ -80,7 +83,12 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
         mCurrentTime.setText("Cập nhật gần nhất: "+dateFormat1.format(new Date(currentlyWeather.getDt()*1000L)));
         mCurrentHumidity.setText(currentlyWeather.getMain().getHumidity()+" %");
         mCurrentCloud.setText(currentlyWeather.getClouds().getAll()+" %");
-        mCurrentVisibility.setText(currentlyWeather.getVisibility()/1000+" km");
+        try {
+            mCurrentVisibility.setText(currentlyWeather.getVisibility()/1000+" km");
+        } catch (NullPointerException e){
+            mCurrentVisibility.setText(0+" km");
+        }
+
         mCurrentPressure.setText(currentlyWeather.getMain().getPressure()+" hPa");
         try {
             mCurrentRain.setText(Math.round(currentlyWeather.getRain().get3h())+" mm");
