@@ -15,14 +15,18 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDkQB1cnDgrfBRzhwD13KAzu30mGJRi_Ck"/>
-        <activity android:name="com.example.hiephoangvan.weather.activities.MainActivity">
+        <activity android:name="com.example.hiephoangvan.weather.activities.MainActivity"
+            android:launchMode="singleTop"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.PlaceActivity">
+        <activity android:name=".activities.PlaceActivity"
+            android:parentActivityName=".activities.MainActivity"
+            >
         </activity>
     </application>
 

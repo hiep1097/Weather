@@ -19,7 +19,9 @@
         android:layout_height="wrap_content"
         tools:text="Ha Noi, Viet Nam"
         android:layout_toRightOf="@+id/image_place"
+        android:layout_toLeftOf="@+id/btn_more"
         android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"
         android:layout_centerVertical="true"
         />
     <ImageView

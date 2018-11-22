@@ -49,6 +49,11 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     HourlyAdapter mHourlyAdapter;
     java.util.List<List> list = new ArrayList<>();
     private DateFormat dateFormat1;
+    public static FragmentHourly instance;
+
+    public FragmentHourly() {
+        instance = this;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

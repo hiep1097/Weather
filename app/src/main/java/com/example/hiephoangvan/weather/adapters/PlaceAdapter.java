@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                         }
                     }
                 });
+                Menu popupMenu = popup.getMenu();
+                if(position==0)
+                    popupMenu.findItem(R.id.it_delete).setVisible(false);
+                else
+                    popupMenu.findItem(R.id.it_delete).setVisible(true);
                 popup.show();
 
             }

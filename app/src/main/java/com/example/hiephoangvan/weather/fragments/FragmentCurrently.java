@@ -1,12 +1,15 @@
 package com.example.hiephoangvan.weather.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.Config;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
+import com.example.hiephoangvan.weather.activities.MainActivity;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.models.CurrentlyWeather;
@@ -51,6 +55,12 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     @BindView(R.id.refreshlayoutCurrently) SwipeRefreshLayout mRefreshLayout;
     private DateFormat dateFormat1;
     private DateFormat dateFormat2;
+    public static FragmentCurrently instance;
+
+    public FragmentCurrently() {
+        instance = this;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -102,8 +112,9 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-        mRefreshLayout.setRefreshing(false);
+        mRefreshLayout.setRefreshing(true);
         getCurrentWeather();
+        mRefreshLayout.setRefreshing(false);
     }
 
     public Drawable getDrawable(Context context, String name){
