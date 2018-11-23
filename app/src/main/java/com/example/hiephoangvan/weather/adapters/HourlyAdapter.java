@@ -51,10 +51,15 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
         holder.mHourlyTime.setText(sb.toString());
         holder.mHourlyImageWeather.setImageDrawable(getDrawable(context,"ic_"+list.get(position).getWeather().get(0).getIcon()));
         holder.mHourlyTemp.setText(Math.round(list.get(position).getMain().getTemp())+"");
-        if (list.get(position).getRain().get3h()==null){
-            list.get(position).getRain().set3h(0.00);
+        try {
+            if (list.get(position).getRain().get3h()==null){
+                list.get(position).getRain().set3h(0.00);
+            }
+            holder.mHourlyRain.setText(" "+(double) Math.round(list.get(position).getRain().get3h() * 100) / 100+" mm");
+        } catch (NullPointerException e){
+            holder.mHourlyRain.setText(" "+0.00+" mm");
         }
-        holder.mHourlyRain.setText(" "+(double) Math.round(list.get(position).getRain().get3h() * 100) / 100+" mm");
+
         holder.mHourlyHumidity.setText(" "+list.get(position).getMain().getHumidity()+" %");
         //layout thu ngay
         String ngayThang = list.get(position).getDtTxt().split(" ")[0];

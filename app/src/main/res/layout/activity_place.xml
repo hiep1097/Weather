@@ -11,13 +11,26 @@
         layout="@layout/toolbar"
         >
     </include>
-    <Button
-        android:id="@+id/btn_add_place"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="    Thêm vị trí"
-        android:drawableLeft="@drawable/ic_add"
-        />
+        android:gravity="center"
+        android:layout_margin="@dimen/_10sdp"
+        >
+        <ImageView
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:src="@drawable/ic_add"
+            />
+        <Button
+            android:id="@+id/btn_add_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="    Thêm vị trí"
+            android:background="@android:color/transparent"
+            />
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewPlace"
         android:layout_width="match_parent"

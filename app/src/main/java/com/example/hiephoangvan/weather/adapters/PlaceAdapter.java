@@ -50,6 +50,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.mPlace.setSelected(true);
         if (position==homePossition){
             holder.mImagePlace.setImageResource(R.drawable.ic_home);
         } else {

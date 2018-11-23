@@ -11,10 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:tag="@string/tag_menu"
-        app:footer="@layout/duo_view_footer"
-        app:header="@layout/duo_view_header"
-        />
+        android:tag="@string/tag_menu">
+        <include
+            layout="@layout/nav_menu"
+            />
+    </nl.psdcompany.duonavigationdrawer.views.DuoMenuView>
     <FrameLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"

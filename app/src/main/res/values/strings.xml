@@ -2,4 +2,7 @@
     <string name="app_name">Weather</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="_do">°</string>
+    <string name="_doC">°C</string>
+    <string name="_doF">°F</string>
 </resources>

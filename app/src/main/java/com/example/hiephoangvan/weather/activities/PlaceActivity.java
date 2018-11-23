@@ -46,9 +46,7 @@ import butterknife.ButterKnife;
 
 public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     String TAG = "PLACE_ACTIVITY";
-    PlaceDetectionClient mPlaceDetectionClient;
-    private boolean mLocationPermissionGranted;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
     @BindView(R.id.recyclerViewPlace)
     RecyclerView mRecyclerViewPlace;
     @BindView(R.id.btn_add_place)
@@ -58,7 +56,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     PlaceAdapter placeAdapter;
-    List<com.example.hiephoangvan.weather.models.Place> list = new ArrayList<>();
+    public static List<com.example.hiephoangvan.weather.models.Place> list = new ArrayList<>();
     PlaceDatabase placeDatabase;
     private static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 2;
     @Override
@@ -72,12 +70,10 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
         placeDatabase = new PlaceDatabase(this);
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-        getLocationPermission();
+        list = placeDatabase.getAllPlaces();
         placeAdapter = new PlaceAdapter(list, this::onClick);
         mRecyclerViewPlace.setAdapter(placeAdapter);
         mRecyclerViewPlace.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        getDeviceLocation();
         mButtonAddPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +105,14 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
                 com.example.hiephoangvan.weather.models.Place p
                         = new com.example.hiephoangvan.weather.models.Place(list.size(), place.getName().toString()
                         , place.getAddress().toString(), (float) place.getLatLng().latitude, (float) place.getLatLng().longitude);
-                if (!list.contains(p)) {
+                boolean dupl = false;
+                for (com.example.hiephoangvan.weather.models.Place pl: list){
+                    if (pl.getAddress().compareTo(p.getAddress())==0){
+                        dupl = true;
+                        break;
+                    }
+                }
+                if (!dupl) {
                     placeDatabase.addPlace(p);
                     updateList();
                 }
@@ -127,70 +130,6 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         this.list.clear();
         this.list.addAll(placeDatabase.getAllPlaces());
         placeAdapter.notifyDataSetChanged();
-    }
-
-    private void getDeviceLocation() {
-        try {
-            if (mLocationPermissionGranted) {
-                Task<PlaceLikelihoodBufferResponse> placeResult = mPlaceDetectionClient.getCurrentPlace(null);
-                placeResult.addOnCompleteListener(new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
-                        PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
-                        Place place = likelyPlaces.get(0).getPlace();
-                        com.example.hiephoangvan.weather.models.Place p
-                                = new com.example.hiephoangvan.weather.models.Place(list.size(), place.getName().toString()
-                                , place.getAddress().toString(), (float) place.getLatLng().latitude, (float) place.getLatLng().longitude);
-                        if (!list.contains(place)) {
-                            placeDatabase.addPlace(p);
-                            updateList();
-                        }
-                        likelyPlaces.release();
-                    }
-                });
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
-    /**
-     * Prompts the user for permission to use the device location.
-     */
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    /**
-     * Handles the result of the request for location permissions.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
-            }
-        }
     }
 
     @Override
