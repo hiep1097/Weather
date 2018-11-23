@@ -67,9 +67,9 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         setContentView(R.layout.activity_place);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        toolbarTitle.setText("Chỉnh sửa vị trí");
+        toolbarTitle.setVisibility(View.GONE);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("");
+        actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
         placeDatabase = new PlaceDatabase(this);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
