@@ -8,6 +8,7 @@ xmlns:tools="http://schemas.android.com/tools"
 android:orientation="vertical"
     >
 <android.support.v4.widget.NestedScrollView
+    android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
@@ -15,18 +16,14 @@ android:orientation="vertical"
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/_10sdp"
-            android:layout_margin="@dimen/_5sdp"
-            >
+
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 xmlns:android="http://schemas.android.com/apk/res/android"
-                android:background="#ff234769"
+                android:background="@drawable/bg_trans"
                 android:padding="@dimen/_10sdp"
+                android:layout_margin="@dimen/_5sdp"
                 >
 
                 <TextView
@@ -84,12 +81,11 @@ android:orientation="vertical"
                     />
 
             </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ff234769"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/bg_trans2"
             android:layout_marginTop="@dimen/_20sdp"
             android:gravity="center_vertical"
             android:padding="@dimen/_5sdp"

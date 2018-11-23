@@ -4,12 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
     <LinearLayout
         android:id="@+id/ln_thu_ngay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#14cf78"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@drawable/bg_trans1"
         >
         <TextView
             android:id="@+id/tv_thu_ngay"
@@ -22,9 +23,9 @@
     </LinearLayout>
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_40sdp"
         android:orientation="vertical"
-        android:background="#ff234769"
+        android:background="@android:color/transparent"
         android:padding="@dimen/_5sdp"
         >
 

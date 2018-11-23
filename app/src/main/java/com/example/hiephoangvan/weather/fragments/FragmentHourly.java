@@ -63,6 +63,7 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
         mHourlyAdapter = new HourlyAdapter(list);
         mRecyclerView.setAdapter(mHourlyAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        mRecyclerView.setNestedScrollingEnabled(false);
         getCurrentWeather();
         getHourlyWeather();
         mRefreshLayout.setOnRefreshListener(this::onRefresh);

@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
         toolbarTitle.setText(UtilPref.getString(this,"address",""));
+        toolbarTitle.setSelected(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
     }
