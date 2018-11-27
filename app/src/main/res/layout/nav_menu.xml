@@ -1,4 +1,5 @@
-<ScrollView xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    android:id="@+id/mScrollNav"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,6 +22,7 @@
             android:gravity="center_vertical"
             />
         <LinearLayout
+            android:id="@+id/it_vitri"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:padding="@dimen/_10sdp"
@@ -61,6 +63,7 @@
                 />
 
             <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+                android:id="@+id/it_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 custom:textToggleLeft="@string/_doC"
@@ -71,27 +74,9 @@
                 custom:cornerRadius="@dimen/_4sdp"
                 />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_45sdp"
-            android:padding="@dimen/_10sdp"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_trans1"
-            android:layout_marginBottom="@dimen/_5sdp"
-            >
-            <ImageView
-                android:layout_width="@dimen/_15sdp"
-                android:layout_height="@dimen/_15sdp"
-                android:src="@drawable/ic_unit"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cài đặt đơn vị"
-                android:layout_marginLeft="@dimen/_10sdp"
-                />
-        </LinearLayout>
-        <LinearLayout
+            android:id="@+id/it_wallpaper"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:padding="@dimen/_10sdp"

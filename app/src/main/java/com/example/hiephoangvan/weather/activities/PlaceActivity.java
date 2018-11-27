@@ -1,8 +1,12 @@
 package com.example.hiephoangvan.weather.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +43,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,24 +52,24 @@ import butterknife.ButterKnife;
 
 public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     String TAG = "PLACE_ACTIVITY";
-
-    @BindView(R.id.recyclerViewPlace)
-    RecyclerView mRecyclerViewPlace;
-    @BindView(R.id.btn_add_place)
-    Button mButtonAddPlace;
-    @BindView(R.id.tv_title_toolbar)
-    TextView toolbarTitle;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.recyclerViewPlace) RecyclerView mRecyclerViewPlace;
+    @BindView(R.id.btn_add_place) Button mButtonAddPlace;
+    @BindView(R.id.tv_title_toolbar) TextView toolbarTitle;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.layoutplace) LinearLayout mLayoutPlace;
     PlaceAdapter placeAdapter;
     public static List<com.example.hiephoangvan.weather.models.Place> list = new ArrayList<>();
     PlaceDatabase placeDatabase;
     private static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 2;
+    public static PlaceActivity instance;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
         ButterKnife.bind(this);
+        instance = this;
+        if (UtilPref.getInt(this,"wallpaperpos",0)!=15) setBackground();
+        else setBackground(UtilPref.getString(this,"wallpaperpath",""));
         setSupportActionBar(mToolbar);
         toolbarTitle.setVisibility(View.GONE);
         ActionBar actionBar = getSupportActionBar();
@@ -147,5 +153,18 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         super.onBackPressed();
         setResult(Activity.RESULT_CANCELED);
         finish();
+    }
+    public void setBackground(){
+        mLayoutPlace.setBackground(getDrawable(this,"wallpaper"+UtilPref.getInt(this,"wallpaperpos",0)));
+    }
+    public void setBackground(String path){
+        mLayoutPlace.setBackground(Drawable.createFromPath(path));
+    }
+    public Drawable getDrawable(Context context, String name) {
+        Resources resources = context.getResources();
+        final int resourceId = resources.getIdentifier(name, "drawable",
+                context.getPackageName());
+        Drawable drawable = resources.getDrawable(resourceId);
+        return drawable;
     }
 }

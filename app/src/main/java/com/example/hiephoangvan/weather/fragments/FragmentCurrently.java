@@ -76,7 +76,7 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
         Observable<CurrentlyWeather> observable = service.getCurrentWeather(
                 UtilPref.getFloat(getContext(),"lat",0),
-                UtilPref.getFloat(getContext(),"lon",0),"metric","vi", Config.API_KEY);
+                UtilPref.getFloat(getContext(),"lon",0),UtilPref.getString(getContext(),"unit","metric"),"vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateView(response),
@@ -105,8 +105,12 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
         } catch (NullPointerException e){
             mCurrentRain.setText("0 mm");
         }
+        if (UtilPref.getString(getContext(),"unit","metric").compareTo("metric")==0){
+            mCurrentWindSpeed.setText(currentlyWeather.getWind().getSpeed()+" m/s");
+        } else {
+            mCurrentWindSpeed.setText(currentlyWeather.getWind().getSpeed()+" dặm/h");
+        }
 
-        mCurrentWindSpeed.setText(currentlyWeather.getWind().getSpeed()+" km/h");
         mCurrentWindDeg.setText("Deg: "+currentlyWeather.getWind().getDeg()+"");
     }
 

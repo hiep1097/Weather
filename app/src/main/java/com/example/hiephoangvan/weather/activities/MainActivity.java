@@ -1,8 +1,12 @@
 package com.example.hiephoangvan.weather.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -25,6 +29,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,23 +47,29 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
+import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        DuoMenuView.OnMenuClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     @BindView(R.id.content_layout) FrameLayout mContentLayout;
     @BindView(R.id.tabLayout) TabLayout mTabLayout;
     @BindView(R.id.viewPager) ViewPager mViewPager;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.tv_title_toolbar) TextView toolbarTitle;
     @BindView(R.id.drawer) DuoDrawerLayout drawerLayout;
+    @BindView(R.id.it_vitri) LinearLayout mItemLocation;
+    @BindView(R.id.it_temp) ToggleSwitch mItemTemp;
+    @BindView(R.id.it_wallpaper) LinearLayout mItemWallpaper;
+    @BindView(R.id.mScrollNav) ScrollView mScrollNav;
     FragmentManager mFragmentManager;
     ViewpagerAdapter mViewpagerAdapter;
     public static final int REQUEST_CODE = 1;
@@ -66,12 +78,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     PlaceDetectionClient mPlaceDetectionClient;
     PlaceDatabase placeDatabase;
     public static List<com.example.hiephoangvan.weather.models.Place> list = new ArrayList<>();
+    public static MainActivity instance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
+        instance = this;
         placeDatabase = new PlaceDatabase(this);
         list = placeDatabase.getAllPlaces();
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
@@ -94,11 +107,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbarTitle.setSelected(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
+        mItemLocation.setOnClickListener(this::onClick);
+        mItemWallpaper.setOnClickListener(this::onClick);
+        toggleSwitchListener();
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
+    public void toggleSwitchListener(){
+        if (UtilPref.getString(MainActivity.this,"unit","metric").compareTo("metric")==0){
+            mItemTemp.setCheckedTogglePosition(0);
+        } else {
+            mItemTemp.setCheckedTogglePosition(1);
+        }
+        mItemTemp.setOnToggleSwitchChangeListener(new BaseToggleSwitch.OnToggleSwitchChangeListener() {
+            @Override
+            public void onToggleSwitchChangeListener(int position, boolean isChecked) {
+                if (position==0){
+                    UtilPref.setString(MainActivity.this,"unit","metric");
+
+                } else {
+                    UtilPref.setString(MainActivity.this,"unit","imperial");
+                }
+                FragmentCurrently.instance.onRefresh();
+                FragmentHourly.instance.onRefresh();
+            }
+        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,17 +244,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onFooterClicked() {
-
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.it_vitri:
+                Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
+                startActivityForResult(intent,REQUEST_CODE);
+                drawerLayout.closeDrawer();
+                break;
+            case R.id.it_wallpaper:
+                Intent intent1 = new Intent(MainActivity.this,WallpaperActivity.class);
+                startActivityForResult(intent1,REQUEST_CODE);
+                break;
+        }
     }
-
-    @Override
-    public void onHeaderClicked() {
-
+    public void setBackground(){
+        mContentLayout.setBackground(getDrawable(this,"wallpaper"+UtilPref.getInt(this,"wallpaperpos",0)));
+        mScrollNav.setBackground(getDrawable(this,"wallpaper"+UtilPref.getInt(this,"wallpaperpos",0)));
     }
-
-    @Override
-    public void onOptionClicked(int position, Object objectClicked) {
-
+    public void setBackground(String path){
+        mContentLayout.setBackground(Drawable.createFromPath(path));
+        mScrollNav.setBackground(Drawable.createFromPath(path));
+    }
+    public Drawable getDrawable(Context context, String name) {
+        Resources resources = context.getResources();
+        final int resourceId = resources.getIdentifier(name, "drawable",
+                context.getPackageName());
+        Drawable drawable = resources.getDrawable(resourceId);
+        return drawable;
     }
 }

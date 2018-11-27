@@ -74,7 +74,7 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
         Observable<CurrentlyWeather> observable = service.getCurrentWeather(
                 UtilPref.getFloat(getContext(),"lat",0),
-                UtilPref.getFloat(getContext(),"lon",0),"metric","vi", Config.API_KEY);
+                UtilPref.getFloat(getContext(),"lon",0),UtilPref.getString(getContext(),"unit","metric"),"vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateView(response),
@@ -85,7 +85,7 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
         Observable<HourlyWeather> observable = service.getHourlyWeather(
                 UtilPref.getFloat(getContext(),"lat",0),
-                UtilPref.getFloat(getContext(),"lon",0),"metric","vi", Config.API_KEY);
+                UtilPref.getFloat(getContext(),"lon",0),UtilPref.getString(getContext(),"unit","metric"),"vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateList(response),
