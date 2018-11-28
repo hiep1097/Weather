@@ -96,7 +96,9 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     public void updateView(CurrentlyWeather currentlyWeather){
         mCurrentTemp.setText(Math.round(currentlyWeather.getMain().getTemp())+"");
         mCurrentImageWeather.setImageDrawable(getDrawable(getContext(),"ic_"+currentlyWeather.getWeather().get(0).getIcon()));
-        mCurrentDescription.setText(currentlyWeather.getWeather().get(0).getDescription());
+        StringBuilder sb = new StringBuilder(currentlyWeather.getWeather().get(0).getDescription());
+        sb.setCharAt(0,Character.toUpperCase(sb.charAt(0)));
+        mCurrentDescription.setText(sb.toString());
         mCurrentTime.setText("Cập nhật gần nhất: "+dateFormat1.format(new Date(currentlyWeather.getDt()*1000L)));
         }
 

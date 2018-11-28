@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -85,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         instance = this;
+        if (UtilPref.getInt(this,"wallpaperpos",0)!=15) setBackground();
+        else setBackground(UtilPref.getString(this,"wallpaperpath",""));
         placeDatabase = new PlaceDatabase(this);
         list = placeDatabase.getAllPlaces();
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
@@ -136,6 +139,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.option_menu, menu);
+        MenuItem item = menu.findItem(R.id.it_location);
+        ScaleDrawable scaleDrawable = (ScaleDrawable) item.getIcon();
+        scaleDrawable.setLevel(3000);
         return true;
     }
 

@@ -50,7 +50,7 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
         sb.delete(5,8);
         holder.mHourlyTime.setText(sb.toString());
         holder.mHourlyImageWeather.setImageDrawable(getDrawable(context,"ic_"+list.get(position).getWeather().get(0).getIcon()));
-        holder.mHourlyTemp.setText(Math.round(list.get(position).getMain().getTemp())+"");
+        holder.mHourlyTemp.setText(Math.round(list.get(position).getMain().getTemp())+context.getResources().getString(R.string._do));
         try {
             if (list.get(position).getRain().get3h()==null){
                 list.get(position).getRain().set3h(0.00);

@@ -52,7 +52,7 @@
 
         <TextView
             android:id="@+id/tv_hourly_temp"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_30sdp"
             android:layout_height="wrap_content"
             android:text="20"
             android:textSize="@dimen/_13ssp"
@@ -63,24 +63,12 @@
             android:paddingRight="@dimen/_7sdp"
             />
 
-        <TextView
-            android:id="@+id/tv_symbol"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="o"
-            android:textSize="@dimen/_10ssp"
-            app:layout_constraintRight_toRightOf="@+id/tv_hourly_temp"
-            app:layout_constraintTop_toTopOf="@+id/tv_hourly_temp"
-            app:layout_constraintBottom_toTopOf="@id/tv_hourly_temp"
-            android:paddingTop="@dimen/_7sdp"
-            />
-
         <ImageView
             android:id="@+id/image_luongmua"
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"
             android:src="@drawable/ic_precipitation"
-            android:layout_marginLeft="@dimen/_35sdp"
+            android:layout_marginLeft="@dimen/_30sdp"
             app:layout_constraintStart_toEndOf="@id/tv_hourly_temp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
