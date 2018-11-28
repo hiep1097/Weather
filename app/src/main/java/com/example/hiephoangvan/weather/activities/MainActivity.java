@@ -180,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
                         PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
                         Place place = likelyPlaces.get(0).getPlace();
+                        Log.d("placeeeeeee",place.getLatLng().latitude+" "+place.getLatLng().longitude);
                         com.example.hiephoangvan.weather.models.Place p
                                 = new com.example.hiephoangvan.weather.models.Place(list.size(), place.getName().toString()
                                 , place.getAddress().toString(), (float) place.getLatLng().latitude, (float) place.getLatLng().longitude);
@@ -195,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             UtilPref.setFloat(MainActivity.this, "lat", p.getLat());
                             UtilPref.setFloat(MainActivity.this, "lon", p.getLon());
                             UtilPref.setString(MainActivity.this, "address", p.getAddress());
+                            FragmentCurrently.instance.onRefresh();
+                            FragmentHourly.instance.onRefresh();
                             toolbarTitle.setText(p.getAddress());
                         }
                         likelyPlaces.release();

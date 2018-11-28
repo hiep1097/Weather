@@ -53,7 +53,7 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
     WallpaperAdapter adapter;
     List<Wallpaper> list;
     private static final int PICK_IMAGE = 3;
-    boolean mReadExternalPermissionGranted = false;
+    boolean mReadExternalPermissionGranted;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,11 +75,16 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 1) {
+        mReadExternalPermissionGranted = false;
+        if (requestCode == 4) {
             if (grantResults.length == 1 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(WallpaperActivity.this, "Permision Write File is Granted", Toast.LENGTH_SHORT).show();
                 mReadExternalPermissionGranted = true;
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
             } else {
                 Toast.makeText(WallpaperActivity.this, "Permision Write File is Denied", Toast.LENGTH_SHORT).show();
 
@@ -92,7 +97,6 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
     public void initPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
                 //Permisson don't granted
                 if (shouldShowRequestPermissionRationale(
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -103,8 +107,13 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
                     Toast.makeText(WallpaperActivity.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
                 }
                 //Register permission
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
 
+            } else {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
             }
         }
     }
@@ -121,12 +130,6 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.floatButton:
                 initPermission();
-                if (mReadExternalPermissionGranted){
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-                }
                 break;
         }
     }
