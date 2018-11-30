@@ -28,8 +28,11 @@ import android.widget.Toast;
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.PlaceAdapter;
+import com.example.hiephoangvan.weather.api.RetrofitInstance;
+import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
+import com.example.hiephoangvan.weather.models.Zone;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -49,6 +52,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     String TAG = "PLACE_ACTIVITY";

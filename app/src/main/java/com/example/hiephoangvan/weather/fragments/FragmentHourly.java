@@ -1,6 +1,7 @@
 package com.example.hiephoangvan.weather.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,7 +52,7 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     java.util.List<List> list = new ArrayList<>();
     private DateFormat dateFormat1;
     public static FragmentHourly instance;
-
+    TimeZone timeZone;
     public FragmentHourly() {
         instance = this;
     }
@@ -59,7 +61,9 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hourly,container,false);
         ButterKnife.bind(this,view);
+        timeZone = TimeZone.getTimeZone(UtilPref.getString(getContext(),"timezone","Asia/Ho_Chi_Minh"));
         dateFormat1 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+        dateFormat1.setTimeZone(timeZone);
         mHourlyAdapter = new HourlyAdapter(list,getContext());
         mRecyclerView.setAdapter(mHourlyAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
@@ -99,6 +103,7 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
         StringBuilder sb = new StringBuilder(currentlyWeather.getWeather().get(0).getDescription());
         sb.setCharAt(0,Character.toUpperCase(sb.charAt(0)));
         mCurrentDescription.setText(sb.toString());
+        dateFormat1.setTimeZone(timeZone);
         mCurrentTime.setText("Cập nhật gần nhất: "+dateFormat1.format(new Date(currentlyWeather.getDt()*1000L)));
         }
 
@@ -113,13 +118,21 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     public void updateList(HourlyWeather hourlyWeather) {
         this.list.clear();
         this.list.addAll(hourlyWeather.getList());
-        this.mHourlyAdapter.notifyDataSetChanged();
+        this.mHourlyAdapter = new HourlyAdapter(this.list,getContext());
+        mRecyclerView.setAdapter(mHourlyAdapter);
     }
 
     @Override
     public void onRefresh() {
-        mRefreshLayout.setRefreshing(false);
+        mRefreshLayout.setRefreshing(true);
+        timeZone = TimeZone.getTimeZone(UtilPref.getString(getContext(),"timezone","Asia/Ho_Chi_Minh"));
         getCurrentWeather();
         getHourlyWeather();
+        mRefreshLayout.setRefreshing(false);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        onRefresh();
     }
 }

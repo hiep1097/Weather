@@ -36,10 +36,10 @@ public class ViewpagerAdapter extends FragmentStatePagerAdapter {
         String title = "";
         switch (position){
             case 0:
-                title = "Currently";
+                title = "Hiện tại";
                 break;
             case 1:
-                title = "Hourly";
+                title = "Hàng giờ";
                 break;
         }
         return title;

@@ -40,28 +40,11 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
     private java.util.List<List> list;
     private Context context;
     private DateFormat dateFormat1;
+    TimeZone timeZone;
     public HourlyAdapter(java.util.List<List> list, Context context) {
         this.list = list;
         dateFormat1 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
         this.context = context;
-        getTimeZone(context);
-    }
-
-    public void getTimeZone(Context context){
-        Service service = RetrofitInstance.getRetrofitInstance2().create(Service.class);
-        Observable<Zone> observable = service.getTimeZone(
-                UtilPref.getFloat(context,"lat",0),
-                UtilPref.getFloat(context,"lon",0), "hiep1097");
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response->updateTimezone(response),
-                        error->Log.d("timezoneerror",error.getMessage()));
-    }
-
-    public void updateTimezone(Zone zone){
-        TimeZone timeZone = TimeZone.getTimeZone(zone.getTimezoneId());
-        Log.d("timezoneeeeee",zone.getTimezoneId());
-        dateFormat1.setTimeZone(timeZone);
     }
 
     @Override
@@ -73,6 +56,8 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        timeZone = TimeZone.getTimeZone(UtilPref.getString(context,"timezone","Asia/Ho_Chi_Minh"));
+        dateFormat1.setTimeZone(timeZone);
         String gioPhut = dateFormat1.format(new Date(list.get(position).getDt()*1000L)).split(" ")[1];
         StringBuilder sb = new StringBuilder(gioPhut);
         sb.delete(5,8);
@@ -100,7 +85,7 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
             holder.mLayoutThuNgay.setVisibility(View.VISIBLE);
             String [] s = ngayThang.split("-");
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeZone(dateFormat1.getTimeZone());
+            calendar.setTimeZone(timeZone);
             calendar.set(Calendar.YEAR,Integer.parseInt(s[0]));
             calendar.set(Calendar.MONTH,Integer.parseInt(s[1])-1);
             calendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(s[2]));

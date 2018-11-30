@@ -13,7 +13,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -38,9 +40,12 @@ import android.widget.Toast;
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
+import com.example.hiephoangvan.weather.api.RetrofitInstance;
+import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.fragments.FragmentCurrently;
 import com.example.hiephoangvan.weather.fragments.FragmentHourly;
+import com.example.hiephoangvan.weather.models.Zone;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
@@ -48,17 +53,27 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.observers.BlockingBaseObserver;
+import io.reactivex.schedulers.Schedulers;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     @BindView(R.id.content_layout) FrameLayout mContentLayout;
@@ -164,8 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // RESULT_OK chỉ ra rằng kết quả này đã thành công
             if(resultCode == Activity.RESULT_OK) {
                 toolbarTitle.setText(UtilPref.getString(this,"address",""));
-                FragmentCurrently.instance.onRefresh();
-                FragmentHourly.instance.onRefresh();
+                getTimeZone(MainActivity.this);
             } else {
                 // DetailActivity không thành công, không có data trả về.
             }
@@ -196,8 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             UtilPref.setFloat(MainActivity.this, "lat", p.getLat());
                             UtilPref.setFloat(MainActivity.this, "lon", p.getLon());
                             UtilPref.setString(MainActivity.this, "address", p.getAddress());
-                            FragmentCurrently.instance.onRefresh();
-                            FragmentHourly.instance.onRefresh();
+                            getTimeZone(MainActivity.this);
                             toolbarTitle.setText(p.getAddress());
                         }
                         likelyPlaces.release();
@@ -209,6 +222,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("Exception: %s", e.getMessage());
         }
     }
+
+    public void getTimeZone(Context context){
+        Service service = RetrofitInstance.getRetrofitInstance2().create(Service.class);
+        Observable<Zone> observable = service.getTimeZone(
+                Math.round(UtilPref.getFloat(context,"lat",0)),
+                Math.round(UtilPref.getFloat(context,"lon",0)), "hiep1097");
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BlockingBaseObserver<Zone>() {
+                    @Override
+                    public void onNext(Zone zone) {
+                        UtilPref.setString(context,"timezone",zone.getTimezoneId());
+                        Log.d("timezoneeeeeeee",UtilPref.getString(MainActivity.this,"timezone",""));
+                        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                            if (fragment != null) {
+                                fragment.onActivityResult(REQUEST_CODE, Activity.RESULT_OK, null);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
     /**
      * Prompts the user for permission to use the device location.
      */
