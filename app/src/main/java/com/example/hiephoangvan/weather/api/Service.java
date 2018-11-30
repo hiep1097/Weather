@@ -2,6 +2,7 @@ package com.example.hiephoangvan.weather.api;
 
 import com.example.hiephoangvan.weather.models.CurrentlyWeather;
 import com.example.hiephoangvan.weather.models.HourlyWeather;
+import com.example.hiephoangvan.weather.models.Zone;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -19,4 +20,6 @@ public interface Service {
     @GET("forecast")
     Observable<HourlyWeather> getHourlyWeather(@Query("lat") float lat, @Query("lon") float lon,
                                                @Query("units") String units, @Query("lang") String lang, @Query("APPID") String APPID);
+    @GET("timezoneJSON")
+    Observable<Zone> getTimeZone(@Query("lat") float lat,@Query("lng") float lng, @Query("username") String username);
 }

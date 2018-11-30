@@ -11,41 +11,69 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
+import com.example.hiephoangvan.weather.Utils.UtilPref;
+import com.example.hiephoangvan.weather.api.RetrofitInstance;
+import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.models.HourlyWeather;
 
 import com.example.hiephoangvan.weather.models.List;
+import com.example.hiephoangvan.weather.models.Zone;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder> {
 
     private java.util.List<List> list;
     private Context context;
-
-    public HourlyAdapter(java.util.List<List> list) {
+    private DateFormat dateFormat1;
+    public HourlyAdapter(java.util.List<List> list, Context context) {
         this.list = list;
+        dateFormat1 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+        this.context = context;
+        getTimeZone(context);
+    }
+
+    public void getTimeZone(Context context){
+        Service service = RetrofitInstance.getRetrofitInstance2().create(Service.class);
+        Observable<Zone> observable = service.getTimeZone(
+                UtilPref.getFloat(context,"lat",0),
+                UtilPref.getFloat(context,"lon",0), "hiep1097");
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response->updateTimezone(response),
+                        error->Log.d("timezoneerror",error.getMessage()));
+    }
+
+    public void updateTimezone(Zone zone){
+        TimeZone timeZone = TimeZone.getTimeZone(zone.getTimezoneId());
+        Log.d("timezoneeeeee",zone.getTimezoneId());
+        dateFormat1.setTimeZone(timeZone);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_hourly, parent, false);
-        context = parent.getContext();
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String gioPhut = list.get(position).getDtTxt().split(" ")[1];
+        String gioPhut = dateFormat1.format(new Date(list.get(position).getDt()*1000L)).split(" ")[1];
         StringBuilder sb = new StringBuilder(gioPhut);
         sb.delete(5,8);
         holder.mHourlyTime.setText(sb.toString());
@@ -62,15 +90,17 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
 
         holder.mHourlyHumidity.setText(" "+list.get(position).getMain().getHumidity()+" %");
         //layout thu ngay
-        String ngayThang = list.get(position).getDtTxt().split(" ")[0];
+        String ngayThang = dateFormat1.format(new Date(list.get(position).getDt()*1000L)).split(" ")[0];
+        Log.d("ngaythangg",dateFormat1.format(new Date(list.get(position).getDt()*1000L)));
         String ngayThangBefore = null;
         if (position!=0) {
-            ngayThangBefore = list.get(position-1).getDtTxt().split(" ")[0];
+            ngayThangBefore = dateFormat1.format(new Date(list.get(position-1).getDt()*1000L)).split(" ")[0];
         }
         if (position==0 || (position!=0 && ngayThang.compareTo(ngayThangBefore)!=0)){
             holder.mLayoutThuNgay.setVisibility(View.VISIBLE);
             String [] s = ngayThang.split("-");
             Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(dateFormat1.getTimeZone());
             calendar.set(Calendar.YEAR,Integer.parseInt(s[0]));
             calendar.set(Calendar.MONTH,Integer.parseInt(s[1])-1);
             calendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(s[2]));

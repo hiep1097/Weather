@@ -60,7 +60,7 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
         View view = inflater.inflate(R.layout.fragment_hourly,container,false);
         ButterKnife.bind(this,view);
         dateFormat1 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-        mHourlyAdapter = new HourlyAdapter(list);
+        mHourlyAdapter = new HourlyAdapter(list,getContext());
         mRecyclerView.setAdapter(mHourlyAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setNestedScrollingEnabled(false);
