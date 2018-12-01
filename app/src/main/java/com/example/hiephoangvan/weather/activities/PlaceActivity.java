@@ -74,8 +74,8 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         setContentView(R.layout.activity_place);
         ButterKnife.bind(this);
         instance = this;
-        if (UtilPref.getInt(this,"wallpaperpos",0)!=15) setBackground();
-        else setBackground(UtilPref.getString(this,"wallpaperpath",""));
+        if (UtilPref.getInstance().getInt("wallpaperpos",0)!=15) setBackground();
+        else setBackground(UtilPref.getInstance().getString("wallpaperpath",""));
         setSupportActionBar(mToolbar);
         toolbarTitle.setVisibility(View.GONE);
         ActionBar actionBar = getSupportActionBar();
@@ -146,9 +146,9 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
 
     @Override
     public void onClick(View view, int position) {
-        UtilPref.setFloat(this, "lat", list.get(position).getLat());
-        UtilPref.setFloat(this, "lon", list.get(position).getLon());
-        UtilPref.setString(this, "address", list.get(position).getAddress());
+        UtilPref.getInstance().setFloat("lat", list.get(position).getLat());
+        UtilPref.getInstance().setFloat("lon", list.get(position).getLon());
+        UtilPref.getInstance().setString("address", list.get(position).getAddress());
         toolbarTitle.setText(list.get(position).getAddress());
         setResult(Activity.RESULT_OK);
         finish();
@@ -161,7 +161,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         finish();
     }
     public void setBackground(){
-        mLayoutPlace.setBackground(getDrawable(this,"wallpaper"+UtilPref.getInt(this,"wallpaperpos",0)));
+        mLayoutPlace.setBackground(getDrawable(this,"wallpaper"+UtilPref.getInstance().getInt("wallpaperpos",0)));
     }
     public void setBackground(String path){
         mLayoutPlace.setBackground(Drawable.createFromPath(path));

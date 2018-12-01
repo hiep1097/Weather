@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.Config;
+import com.example.hiephoangvan.weather.Utils.UtilDate;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.HourlyAdapter;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
@@ -50,9 +51,7 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     @BindView(R.id.refreshlayoutHourly) SwipeRefreshLayout mRefreshLayout;
     HourlyAdapter mHourlyAdapter;
     java.util.List<List> list = new ArrayList<>();
-    private DateFormat dateFormat1;
     public static FragmentHourly instance;
-    TimeZone timeZone;
     public FragmentHourly() {
         instance = this;
     }
@@ -61,9 +60,6 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hourly,container,false);
         ButterKnife.bind(this,view);
-        timeZone = TimeZone.getTimeZone(UtilPref.getString(getContext(),"timezone","Asia/Ho_Chi_Minh"));
-        dateFormat1 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-        dateFormat1.setTimeZone(timeZone);
         mHourlyAdapter = new HourlyAdapter(list,getContext());
         mRecyclerView.setAdapter(mHourlyAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
@@ -77,8 +73,8 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     public void getCurrentWeather(){
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
         Observable<CurrentlyWeather> observable = service.getCurrentWeather(
-                UtilPref.getFloat(getContext(),"lat",0),
-                UtilPref.getFloat(getContext(),"lon",0),UtilPref.getString(getContext(),"unit","metric"),"vi", Config.API_KEY);
+                UtilPref.getInstance().getFloat("lat",0),
+                UtilPref.getInstance().getFloat("lon",0),UtilPref.getInstance().getString("unit","metric"),"vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateView(response),
@@ -88,8 +84,8 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     public void getHourlyWeather(){
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
         Observable<HourlyWeather> observable = service.getHourlyWeather(
-                UtilPref.getFloat(getContext(),"lat",0),
-                UtilPref.getFloat(getContext(),"lon",0),UtilPref.getString(getContext(),"unit","metric"),"vi", Config.API_KEY);
+                UtilPref.getInstance().getFloat("lat",0),
+                UtilPref.getInstance().getFloat("lon",0),UtilPref.getInstance().getString("unit","metric"),"vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateList(response),
@@ -103,8 +99,8 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
         StringBuilder sb = new StringBuilder(currentlyWeather.getWeather().get(0).getDescription());
         sb.setCharAt(0,Character.toUpperCase(sb.charAt(0)));
         mCurrentDescription.setText(sb.toString());
-        dateFormat1.setTimeZone(timeZone);
-        mCurrentTime.setText("Cập nhật gần nhất: "+dateFormat1.format(new Date(currentlyWeather.getDt()*1000L)));
+        mCurrentTime.setText("Cập nhật gần nhất: "+UtilDate.getInstance().getDateFormat1()
+                .format(new Date(currentlyWeather.getDt()*1000L)));
         }
 
     public Drawable getDrawable(Context context, String name){
@@ -125,7 +121,6 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onRefresh() {
         mRefreshLayout.setRefreshing(true);
-        timeZone = TimeZone.getTimeZone(UtilPref.getString(getContext(),"timezone","Asia/Ho_Chi_Minh"));
         getCurrentWeather();
         getHourlyWeather();
         mRefreshLayout.setRefreshing(false);

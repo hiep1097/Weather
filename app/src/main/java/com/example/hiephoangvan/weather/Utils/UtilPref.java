@@ -1,19 +1,28 @@
 package com.example.hiephoangvan.weather.Utils;
 
-import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.example.hiephoangvan.weather.application.App;
 
 public class UtilPref {
     private final static String PREF_FILE = "WEATHER";
+    private static UtilPref instance;
+    private static SharedPreferences settings;
+    private static SharedPreferences.Editor editor;
+    private UtilPref(){
 
-    /**
-     * Set a string shared preference
-     * @param key - Key to set shared preference
-     * @param value - Value for the key
-     */
-    public static void setString(Context context, String key, String value){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
+    }
+    public static UtilPref getInstance(){
+        if (instance==null){
+            instance = new UtilPref();
+            settings = App.getContext().getSharedPreferences(PREF_FILE,
+                    App.getContext().MODE_PRIVATE);
+            editor = settings.edit();
+        }
+        return instance;
+    }
+
+    public void setString(String key, String value){
         editor.putString(key, value);
         editor.apply();
     }
@@ -23,28 +32,22 @@ public class UtilPref {
      * @param key - Key to set shared preference
      * @param value - Value for the key
      */
-    public static void setInt(Context context, String key, int value){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
+    public void setInt(String key, int value){
         editor.putInt(key, value);
         editor.apply();
     }
 
     /**
      * Set a float
-     * @param context
      * @param key
      * @param value
      */
-    public static void setFloat(Context context, String key, float value){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
+    public void setFloat(String key, float value){
         editor.putFloat(key, value);
         editor.apply();
     }
 
-    public static float getFloat(Context context, String key,float defValue){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+    public float getFloat(String key,float defValue){
         return settings.getFloat(key,defValue);
     }
     /**
@@ -52,9 +55,7 @@ public class UtilPref {
      * @param key - Key to set shared preference
      * @param value - Value for the key
      */
-    public static void setBoolean(Context context, String key, boolean value){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
+    public void setBoolean(String key, boolean value){
         editor.putBoolean(key, value);
         editor.apply();
     }
@@ -65,8 +66,7 @@ public class UtilPref {
      * @param defValue - Default value to be returned if shared preference isn't found.
      * @return value - String containing value of the shared preference if found.
      */
-    public static String getString(Context context, String key, String defValue){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+    public String getString(String key, String defValue){
         return settings.getString(key, defValue);
     }
 
@@ -76,8 +76,7 @@ public class UtilPref {
      * @param defValue - Default value to be returned if shared preference isn't found.
      * @return value - String containing value of the shared preference if found.
      */
-    public static int getInt(Context context, String key, int defValue){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+    public int getInt(String key, int defValue){
         return settings.getInt(key, defValue);
     }
 
@@ -87,10 +86,7 @@ public class UtilPref {
      * @param defValue - Default value to be returned if shared preference isn't found.
      * @return value - String containing value of the shared preference if found.
      */
-    public static boolean getBoolean(Context context, String key, boolean defValue){
-        SharedPreferences settings = context.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+    public boolean getBoolean(String key, boolean defValue){
         return settings.getBoolean(key, defValue);
     }
-
-
 }

@@ -37,7 +37,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.View
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_wallpaper, parent, false);
         context = parent.getContext();
-        wallpaperPos = UtilPref.getInt(context,"wallpaperpos",0);
+        wallpaperPos = UtilPref.getInstance().getInt("wallpaperpos",0);
         return new ViewHolder(view);
     }
 
@@ -53,7 +53,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.View
             @Override
             public void onClick(View v) {
                 wallpaperPos = position;
-                UtilPref.setInt(context,"wallpaperpos",position);
+                UtilPref.getInstance().setInt("wallpaperpos",position);
                 notifyDataSetChanged();
             }
         });

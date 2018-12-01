@@ -44,7 +44,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         View view = layoutInflater.inflate(R.layout.item_place, parent, false);
         context = parent.getContext();
         placeDatabase = new PlaceDatabase(context);
-        homePossition = UtilPref.getInt(context,"homePossition",0);
+        homePossition = UtilPref.getInstance().getInt("homePossition",0);
         return new ViewHolder(view);
     }
 
@@ -70,7 +70,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.it_setashome:
-                                UtilPref.setInt(context,"homePossition",position);
+                                UtilPref.getInstance().setInt("homePossition",position);
                                 homePossition = position;
                                 notifyDataSetChanged();
                                 mListener.onClick(v,position);

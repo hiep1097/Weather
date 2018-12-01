@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
+import com.example.hiephoangvan.weather.Utils.UtilDate;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
@@ -39,11 +40,8 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
 
     private java.util.List<List> list;
     private Context context;
-    private DateFormat dateFormat1;
-    TimeZone timeZone;
     public HourlyAdapter(java.util.List<List> list, Context context) {
         this.list = list;
-        dateFormat1 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
         this.context = context;
     }
 
@@ -56,9 +54,8 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        timeZone = TimeZone.getTimeZone(UtilPref.getString(context,"timezone","Asia/Ho_Chi_Minh"));
-        dateFormat1.setTimeZone(timeZone);
-        String gioPhut = dateFormat1.format(new Date(list.get(position).getDt()*1000L)).split(" ")[1];
+        String gioPhut = UtilDate.getInstance().getDateFormat1()
+                .format(new Date(list.get(position).getDt()*1000L)).split(" ")[1];
         StringBuilder sb = new StringBuilder(gioPhut);
         sb.delete(5,8);
         holder.mHourlyTime.setText(sb.toString());
@@ -75,17 +72,21 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
 
         holder.mHourlyHumidity.setText(" "+list.get(position).getMain().getHumidity()+" %");
         //layout thu ngay
-        String ngayThang = dateFormat1.format(new Date(list.get(position).getDt()*1000L)).split(" ")[0];
-        Log.d("ngaythangg",dateFormat1.format(new Date(list.get(position).getDt()*1000L)));
+        String ngayThang = UtilDate.getInstance().getDateFormat1()
+                .format(new Date(list.get(position).getDt()*1000L)).split(" ")[0];
+        Log.d("ngaythangg",UtilDate.getInstance().getDateFormat1()
+                .format(new Date(list.get(position).getDt()*1000L)));
         String ngayThangBefore = null;
         if (position!=0) {
-            ngayThangBefore = dateFormat1.format(new Date(list.get(position-1).getDt()*1000L)).split(" ")[0];
+            ngayThangBefore = UtilDate.getInstance().getDateFormat1()
+                    .format(new Date(list.get(position-1).getDt()*1000L)).split(" ")[0];
         }
         if (position==0 || (position!=0 && ngayThang.compareTo(ngayThangBefore)!=0)){
             holder.mLayoutThuNgay.setVisibility(View.VISIBLE);
             String [] s = ngayThang.split("-");
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeZone(timeZone);
+            calendar.setTimeZone(TimeZone
+                    .getTimeZone(UtilPref.getInstance().getString("timezone","")));
             calendar.set(Calendar.YEAR,Integer.parseInt(s[0]));
             calendar.set(Calendar.MONTH,Integer.parseInt(s[1])-1);
             calendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(s[2]));

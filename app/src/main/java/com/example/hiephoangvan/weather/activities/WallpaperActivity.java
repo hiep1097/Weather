@@ -139,8 +139,8 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
         if (requestCode == PICK_IMAGE && resultCode==Activity.RESULT_OK) {
             //TODO: action
             String path = getPath(this,data.getData());
-            UtilPref.setInt(WallpaperActivity.this, "wallpaperpos", 15);
-            UtilPref.setString(WallpaperActivity.this,"wallpaperpath",path);
+            UtilPref.getInstance().setInt("wallpaperpos", 15);
+            UtilPref.getInstance().setString("wallpaperpath",path);
             MainActivity.instance.setBackground(path);
             finish();
         }

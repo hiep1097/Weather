@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.Config;
+import com.example.hiephoangvan.weather.Utils.UtilDate;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.activities.MainActivity;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
@@ -72,9 +73,6 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     TextView mCurrentWindSpeed;
     @BindView(R.id.refreshlayoutCurrently)
     SwipeRefreshLayout mRefreshLayout;
-    private DateFormat dateFormat1;
-    private DateFormat dateFormat2;
-    private DateFormat dateFormat3;
     java.util.List<List> list = new ArrayList<>();
     public static FragmentCurrently instance;
     private CurrentlyWeather currentlyWeather;
@@ -83,20 +81,11 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
         instance = this;
     }
 
-    TimeZone timeZone;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_currently, container, false);
         ButterKnife.bind(this, view);
-        dateFormat1 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-        dateFormat2 = new SimpleDateFormat("kk:mm");
-        dateFormat3 = new SimpleDateFormat("yyyy-MM-dd");
-        timeZone = TimeZone.getTimeZone(UtilPref.getString(getContext(), "timezone", "Asia/Ho_Chi_Minh"));
-        dateFormat1.setTimeZone(timeZone);
-        dateFormat2.setTimeZone(timeZone);
-        dateFormat3.setTimeZone(timeZone);
         getCurrentWeather();
         getHourlyWeather();
         mRefreshLayout.setOnRefreshListener(this::onRefresh);
@@ -106,8 +95,8 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     public void getCurrentWeather() {
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
         Observable<CurrentlyWeather> observable = service.getCurrentWeather(
-                UtilPref.getFloat(getContext(), "lat", 0),
-                UtilPref.getFloat(getContext(), "lon", 0), UtilPref.getString(getContext(), "unit", "metric"),
+                UtilPref.getInstance().getFloat("lat", 0),
+                UtilPref.getInstance().getFloat("lon", 0), UtilPref.getInstance().getString("unit", "metric"),
                 "vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -122,9 +111,13 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
         StringBuilder sb = new StringBuilder(currentlyWeather.getWeather().get(0).getDescription());
         sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
         mCurrentDescription.setText(sb.toString());
-        mCurrentSunsetSunrise.setText(" Bình minh/Hoàng hôn  " + dateFormat2.format(new Date(currentlyWeather.getSys().getSunrise() * 1000L)) + "/"
-                + dateFormat2.format(new Date(currentlyWeather.getSys().getSunset() * 1000L)));
-        mCurrentTime.setText("Cập nhật gần nhất: " + dateFormat1.format(new Date(currentlyWeather.getDt() * 1000L)));
+        mCurrentSunsetSunrise.setText(" Bình minh/Hoàng hôn  " +
+                UtilDate.getInstance().getDateFormat2()
+                        .format(new Date(currentlyWeather.getSys().getSunrise() * 1000L)) + "/"
+                + UtilDate.getInstance().getDateFormat2()
+                .format(new Date(currentlyWeather.getSys().getSunset() * 1000L)));
+        mCurrentTime.setText("Cập nhật gần nhất: " + UtilDate.getInstance().getDateFormat1()
+                .format(new Date(currentlyWeather.getDt() * 1000L)));
         mCurrentHumidity.setText(currentlyWeather.getMain().getHumidity() + " %");
         mCurrentCloud.setText(currentlyWeather.getClouds().getAll() + " %");
         try {
@@ -139,7 +132,7 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
         } catch (NullPointerException e) {
             mCurrentRain.setText("0 mm");
         }
-        if (UtilPref.getString(getContext(), "unit", "metric").compareTo("metric") == 0) {
+        if (UtilPref.getInstance().getString("unit", "metric").compareTo("metric") == 0) {
             mCurrentWindSpeed.setText(currentlyWeather.getWind().getSpeed() + " m/s");
         } else {
             mCurrentWindSpeed.setText(currentlyWeather.getWind().getSpeed() + " dặm/h");
@@ -151,8 +144,8 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     public void getHourlyWeather() {
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
         Observable<HourlyWeather> observable = service.getHourlyWeather(
-                UtilPref.getFloat(getContext(), "lat", 0),
-                UtilPref.getFloat(getContext(), "lon", 0), UtilPref.getString(getContext(), "unit", "metric"), "vi", Config.API_KEY);
+                UtilPref.getInstance().getFloat("lat", 0),
+                UtilPref.getInstance().getFloat("lon", 0), UtilPref.getInstance().getString("unit", "metric"), "vi", Config.API_KEY);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> updateTempMaxMin(response),
@@ -163,7 +156,8 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     public void updateTempMaxMin(HourlyWeather hourlyWeather) {
         this.list.clear();
         this.list.addAll(hourlyWeather.getList());
-        String time = dateFormat3.format(new Date(currentlyWeather.getDt() * 1000L));
+        String time = UtilDate.getInstance().getDateFormat3()
+                .format(new Date(currentlyWeather.getDt() * 1000L));
         long tempMax = Math.round(currentlyWeather.getMain().getTempMax());
         long tempMin = Math.round(currentlyWeather.getMain().getTempMin());
         for (List h : list) {
@@ -184,10 +178,6 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
         mRefreshLayout.setRefreshing(true);
-        timeZone = TimeZone.getTimeZone(UtilPref.getString(getContext(), "timezone", "Asia/Ho_Chi_Minh"));
-        dateFormat1.setTimeZone(timeZone);
-        dateFormat2.setTimeZone(timeZone);
-        dateFormat3.setTimeZone(timeZone);
         getCurrentWeather();
         getHourlyWeather();
         mRefreshLayout.setRefreshing(false);

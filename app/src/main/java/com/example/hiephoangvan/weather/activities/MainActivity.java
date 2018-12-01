@@ -38,10 +38,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
+import com.example.hiephoangvan.weather.Utils.UtilDrawable;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
+import com.example.hiephoangvan.weather.application.App;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.fragments.FragmentCurrently;
 import com.example.hiephoangvan.weather.fragments.FragmentHourly;
@@ -101,8 +103,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         instance = this;
-        if (UtilPref.getInt(this,"wallpaperpos",0)!=15) setBackground();
-        else setBackground(UtilPref.getString(this,"wallpaperpath",""));
+        if (UtilPref.getInstance().getInt("wallpaperpos",0)!=15) setBackground();
+        else setBackground(UtilPref.getInstance().getString("wallpaperpath",""));
         placeDatabase = new PlaceDatabase(this);
         list = placeDatabase.getAllPlaces();
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 R.string.navigation_drawer_close);
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
-        toolbarTitle.setText(UtilPref.getString(this,"address",""));
+        toolbarTitle.setText(UtilPref.getInstance().getString("address",""));
         toolbarTitle.setSelected(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void toggleSwitchListener(){
-        if (UtilPref.getString(MainActivity.this,"unit","metric").compareTo("metric")==0){
+        if (UtilPref.getInstance().getString("unit","metric").compareTo("metric")==0){
             mItemTemp.setCheckedTogglePosition(0);
         } else {
             mItemTemp.setCheckedTogglePosition(1);
@@ -140,10 +142,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onToggleSwitchChangeListener(int position, boolean isChecked) {
                 if (position==0){
-                    UtilPref.setString(MainActivity.this,"unit","metric");
+                    UtilPref.getInstance().setString("unit","metric");
 
                 } else {
-                    UtilPref.setString(MainActivity.this,"unit","imperial");
+                    UtilPref.getInstance().setString("unit","imperial");
                 }
                 FragmentCurrently.instance.onRefresh();
                 FragmentHourly.instance.onRefresh();
@@ -178,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // resultCode được set bởi DetailActivity
             // RESULT_OK chỉ ra rằng kết quả này đã thành công
             if(resultCode == Activity.RESULT_OK) {
-                toolbarTitle.setText(UtilPref.getString(this,"address",""));
+                toolbarTitle.setText(UtilPref.getInstance().getString("address",""));
                 getTimeZone(MainActivity.this);
             } else {
                 // DetailActivity không thành công, không có data trả về.
@@ -207,9 +209,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         if (!dupl) {
                             placeDatabase.addPlace(p);
-                            UtilPref.setFloat(MainActivity.this, "lat", p.getLat());
-                            UtilPref.setFloat(MainActivity.this, "lon", p.getLon());
-                            UtilPref.setString(MainActivity.this, "address", p.getAddress());
+                            UtilPref.getInstance().setFloat("lat", p.getLat());
+                            UtilPref.getInstance().setFloat("lon", p.getLon());
+                            UtilPref.getInstance().setString("address", p.getAddress());
                             getTimeZone(MainActivity.this);
                             toolbarTitle.setText(p.getAddress());
                         }
@@ -226,15 +228,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void getTimeZone(Context context){
         Service service = RetrofitInstance.getRetrofitInstance2().create(Service.class);
         Observable<Zone> observable = service.getTimeZone(
-                Math.round(UtilPref.getFloat(context,"lat",0)),
-                Math.round(UtilPref.getFloat(context,"lon",0)), "hiep1097");
+                Math.round(UtilPref.getInstance().getFloat("lat",0)),
+                Math.round(UtilPref.getInstance().getFloat("lon",0)), "hiep1097");
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BlockingBaseObserver<Zone>() {
                     @Override
                     public void onNext(Zone zone) {
-                        UtilPref.setString(context,"timezone",zone.getTimezoneId());
-                        Log.d("timezoneeeeeeee",UtilPref.getString(MainActivity.this,"timezone",""));
+                        UtilPref.getInstance().setString("timezone",zone.getTimezoneId());
+                        Log.d("timezoneeeeeeee",UtilPref.getInstance().getString("timezone",""));
                         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                             if (fragment != null) {
                                 fragment.onActivityResult(REQUEST_CODE, Activity.RESULT_OK, null);
@@ -307,18 +309,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     public void setBackground(){
-        mContentLayout.setBackground(getDrawable(this,"wallpaper"+UtilPref.getInt(this,"wallpaperpos",0)));
-        mScrollNav.setBackground(getDrawable(this,"wallpaper"+UtilPref.getInt(this,"wallpaperpos",0)));
+        mContentLayout.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
+                +UtilPref.getInstance().getInt("wallpaperpos",0)));
+        mScrollNav.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
+                +UtilPref.getInstance().getInt("wallpaperpos",0)));
     }
     public void setBackground(String path){
         mContentLayout.setBackground(Drawable.createFromPath(path));
         mScrollNav.setBackground(Drawable.createFromPath(path));
-    }
-    public Drawable getDrawable(Context context, String name) {
-        Resources resources = context.getResources();
-        final int resourceId = resources.getIdentifier(name, "drawable",
-                context.getPackageName());
-        Drawable drawable = resources.getDrawable(resourceId);
-        return drawable;
     }
 }
