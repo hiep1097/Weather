@@ -3,58 +3,36 @@ package com.example.hiephoangvan.weather.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.PlaceAdapter;
-import com.example.hiephoangvan.weather.api.RetrofitInstance;
-import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
-import com.example.hiephoangvan.weather.models.Zone;
+import com.example.hiephoangvan.weather.models.Places;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     String TAG = "PLACE_ACTIVITY";
@@ -63,10 +41,10 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     @BindView(R.id.tv_title_toolbar) TextView toolbarTitle;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.layoutplace) LinearLayout mLayoutPlace;
-    PlaceAdapter placeAdapter;
-    public static List<com.example.hiephoangvan.weather.models.Place> list = new ArrayList<>();
-    PlaceDatabase placeDatabase;
-    private static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 2;
+    private PlaceAdapter placeAdapter;
+    private List<Places> list = new ArrayList<>();
+    private PlaceDatabase placeDatabase;
+    private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 2;
     public static PlaceActivity instance;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,11 +92,11 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
-                com.example.hiephoangvan.weather.models.Place p
-                        = new com.example.hiephoangvan.weather.models.Place(list.size(), place.getName().toString()
-                        , place.getAddress().toString(), (float) place.getLatLng().latitude, (float) place.getLatLng().longitude);
+                Places p = new Places(list.size(), place.getName().toString()
+                        , place.getAddress().toString(), (float) place.getLatLng().latitude,
+                        (float) place.getLatLng().longitude);
                 boolean dupl = false;
-                for (com.example.hiephoangvan.weather.models.Place pl: list){
+                for (Places pl: list){
                     if (pl.getAddress().compareTo(p.getAddress())==0){
                         dupl = true;
                         break;

@@ -1,6 +1,5 @@
 package com.example.hiephoangvan.weather.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -9,9 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +20,15 @@ import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.Config;
 import com.example.hiephoangvan.weather.Utils.UtilDate;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
-import com.example.hiephoangvan.weather.activities.MainActivity;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.models.CurrentlyWeather;
 import com.example.hiephoangvan.weather.models.HourlyWeather;
-import com.example.hiephoangvan.weather.models.List;
+import com.example.hiephoangvan.weather.models.Lists;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,13 +67,8 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     TextView mCurrentWindSpeed;
     @BindView(R.id.refreshlayoutCurrently)
     SwipeRefreshLayout mRefreshLayout;
-    java.util.List<List> list = new ArrayList<>();
-    public static FragmentCurrently instance;
+    List<Lists> list = new ArrayList<>();
     private CurrentlyWeather currentlyWeather;
-
-    public FragmentCurrently() {
-        instance = this;
-    }
 
     @Nullable
     @Override
@@ -160,7 +149,7 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
                 .format(new Date(currentlyWeather.getDt() * 1000L));
         long tempMax = Math.round(currentlyWeather.getMain().getTempMax());
         long tempMin = Math.round(currentlyWeather.getMain().getTempMin());
-        for (List h : list) {
+        for (Lists h : list) {
             if (h.getDtTxt().split(" ")[0].compareTo(time) == 0) {
                 if (h.getMain().getTemp() > tempMax) {
                     tempMax = Math.round(h.getMain().getTemp());

@@ -1,8 +1,6 @@
 package com.example.hiephoangvan.weather.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,29 +9,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
-import com.example.hiephoangvan.weather.activities.PlaceActivity;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
-import com.example.hiephoangvan.weather.models.Place;
+import com.example.hiephoangvan.weather.models.Places;
 
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> {
     ItemOnClick mListener;
-    private List<Place> list;
+    private List<Places> list;
     int homePossition=0;
     private Context context;
     PlaceDatabase placeDatabase;
-    public PlaceAdapter(List<Place> list, ItemOnClick mListener) {
+    public PlaceAdapter(List<Places> list, ItemOnClick mListener) {
         this.list = list;
         this.mListener = mListener;
     }

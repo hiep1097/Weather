@@ -3,7 +3,9 @@ package com.example.hiephoangvan.weather.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class List {
+import java.util.List;
+
+public class Lists {
 
     @SerializedName("dt")
     @Expose
@@ -13,7 +15,7 @@ public class List {
     private MainHourly main;
     @SerializedName("weather")
     @Expose
-    private java.util.List<Weather> weather = null;
+    private List<Weather> weather = null;
     @SerializedName("clouds")
     @Expose
     private Clouds clouds;
@@ -46,11 +48,11 @@ public class List {
         this.main = main;
     }
 
-    public java.util.List<Weather> getWeather() {
+    public List<Weather> getWeather() {
         return weather;
     }
 
-    public void setWeather(java.util.List<Weather> weather) {
+    public void setWeather(List<Weather> weather) {
         this.weather = weather;
     }
 

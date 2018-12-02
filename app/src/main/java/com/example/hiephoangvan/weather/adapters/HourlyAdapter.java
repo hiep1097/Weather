@@ -11,36 +11,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilDate;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
-import com.example.hiephoangvan.weather.api.RetrofitInstance;
-import com.example.hiephoangvan.weather.api.Service;
-import com.example.hiephoangvan.weather.models.HourlyWeather;
 
-import com.example.hiephoangvan.weather.models.List;
-import com.example.hiephoangvan.weather.models.Zone;
+import com.example.hiephoangvan.weather.models.Lists;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder> {
 
-    private java.util.List<List> list;
+    private List<Lists> list;
     private Context context;
-    public HourlyAdapter(java.util.List<List> list, Context context) {
+    public HourlyAdapter(List<Lists> list, Context context) {
         this.list = list;
         this.context = context;
     }

@@ -2,14 +2,14 @@ package com.example.hiephoangvan.weather.models;
 
 import java.io.Serializable;
 
-public class Place implements Serializable {
+public class Places implements Serializable {
     private int id;
     private String name;
     private String address;
     private float lat;
     private float lon;
 
-    public Place(int id, String name, String address, float lat, float lon) {
+    public Places(int id, String name, String address, float lat, float lon) {
         this.id = id;
         this.name = name;
         this.address = address;

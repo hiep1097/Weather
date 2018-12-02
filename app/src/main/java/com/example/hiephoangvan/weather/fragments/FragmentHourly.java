@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,13 +27,11 @@ import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.models.CurrentlyWeather;
 import com.example.hiephoangvan.weather.models.HourlyWeather;
-import com.example.hiephoangvan.weather.models.List;
+import com.example.hiephoangvan.weather.models.Lists;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,12 +46,8 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
     @BindView(R.id.tv_currently_time) TextView mCurrentTime;
     @BindView(R.id.recyclerViewHourly) RecyclerView mRecyclerView;
     @BindView(R.id.refreshlayoutHourly) SwipeRefreshLayout mRefreshLayout;
-    HourlyAdapter mHourlyAdapter;
-    java.util.List<List> list = new ArrayList<>();
-    public static FragmentHourly instance;
-    public FragmentHourly() {
-        instance = this;
-    }
+    private HourlyAdapter mHourlyAdapter;
+    private List<Lists> list = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

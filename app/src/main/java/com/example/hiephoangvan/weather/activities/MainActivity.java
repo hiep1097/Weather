@@ -1,32 +1,23 @@
 package com.example.hiephoangvan.weather.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,17 +27,13 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilDrawable;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
-import com.example.hiephoangvan.weather.application.App;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
-import com.example.hiephoangvan.weather.fragments.FragmentCurrently;
-import com.example.hiephoangvan.weather.fragments.FragmentHourly;
 import com.example.hiephoangvan.weather.models.Zone;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -54,28 +41,18 @@ import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
-
 import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.internal.observers.BlockingBaseObserver;
 import io.reactivex.schedulers.Schedulers;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
-import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
-import retrofit2.Call;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     @BindView(R.id.content_layout) FrameLayout mContentLayout;
@@ -88,23 +65,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.it_temp) ToggleSwitch mItemTemp;
     @BindView(R.id.it_wallpaper) LinearLayout mItemWallpaper;
     @BindView(R.id.mScrollNav) ScrollView mScrollNav;
-    FragmentManager mFragmentManager;
-    ViewpagerAdapter mViewpagerAdapter;
-    public static final int REQUEST_CODE = 1;
+    private FragmentManager mFragmentManager;
+    private ViewpagerAdapter mViewpagerAdapter;
+    private final int REQUEST_CODE_PLACE = 1;
+    private final int REQUEST_CODE_WALLPAPER = 5;
     private boolean mLocationPermissionGranted;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    PlaceDetectionClient mPlaceDetectionClient;
-    PlaceDatabase placeDatabase;
-    public static List<com.example.hiephoangvan.weather.models.Place> list = new ArrayList<>();
-    public static MainActivity instance;
+    private PlaceDetectionClient mPlaceDetectionClient;
+    private PlaceDatabase placeDatabase;
+    private List<com.example.hiephoangvan.weather.models.Places> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        instance = this;
-        if (UtilPref.getInstance().getInt("wallpaperpos",0)!=15) setBackground();
-        else setBackground(UtilPref.getInstance().getString("wallpaperpath",""));
+        setBackground();
         placeDatabase = new PlaceDatabase(this);
         list = placeDatabase.getAllPlaces();
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
@@ -147,8 +122,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     UtilPref.getInstance().setString("unit","imperial");
                 }
-                FragmentCurrently.instance.onRefresh();
-                FragmentHourly.instance.onRefresh();
+                for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                    if (fragment != null) {
+                        fragment.onActivityResult(REQUEST_CODE_PLACE, Activity.RESULT_OK, null);
+                    }
+                }
             }
         });
     }
@@ -167,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         if (id==R.id.it_location){
             Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
-            startActivityForResult(intent,REQUEST_CODE);
+            startActivityForResult(intent,REQUEST_CODE_PLACE);
         }
         return false;
     }
@@ -175,15 +153,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE) {
-
-            // resultCode được set bởi DetailActivity
-            // RESULT_OK chỉ ra rằng kết quả này đã thành công
+        if(requestCode == REQUEST_CODE_PLACE) {
             if(resultCode == Activity.RESULT_OK) {
                 toolbarTitle.setText(UtilPref.getInstance().getString("address",""));
-                getTimeZone(MainActivity.this);
+                getTimeZone();
             } else {
-                // DetailActivity không thành công, không có data trả về.
+            }
+        } else if (requestCode == REQUEST_CODE_WALLPAPER){
+            if(resultCode == Activity.RESULT_OK) {
+                setBackground();
+            } else {
             }
         }
     }
@@ -197,11 +176,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
                         Place place = likelyPlaces.get(0).getPlace();
                         Log.d("placeeeeeee",place.getLatLng().latitude+" "+place.getLatLng().longitude);
-                        com.example.hiephoangvan.weather.models.Place p
-                                = new com.example.hiephoangvan.weather.models.Place(list.size(), place.getName().toString()
+                        com.example.hiephoangvan.weather.models.Places p
+                                = new com.example.hiephoangvan.weather.models.Places(list.size(), place.getName().toString()
                                 , place.getAddress().toString(), (float) place.getLatLng().latitude, (float) place.getLatLng().longitude);
                         boolean dupl = false;
-                        for (com.example.hiephoangvan.weather.models.Place pl: list){
+                        for (com.example.hiephoangvan.weather.models.Places pl: list){
                             if (pl.getAddress().compareTo(p.getAddress())==0){
                                 dupl = true;
                                 break;
@@ -212,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             UtilPref.getInstance().setFloat("lat", p.getLat());
                             UtilPref.getInstance().setFloat("lon", p.getLon());
                             UtilPref.getInstance().setString("address", p.getAddress());
-                            getTimeZone(MainActivity.this);
+                            getTimeZone();
                             toolbarTitle.setText(p.getAddress());
                         }
                         likelyPlaces.release();
@@ -225,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void getTimeZone(Context context){
+    public void getTimeZone(){
         Service service = RetrofitInstance.getRetrofitInstance2().create(Service.class);
         Observable<Zone> observable = service.getTimeZone(
                 Math.round(UtilPref.getInstance().getFloat("lat",0)),
@@ -239,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.d("timezoneeeeeeee",UtilPref.getInstance().getString("timezone",""));
                         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                             if (fragment != null) {
-                                fragment.onActivityResult(REQUEST_CODE, Activity.RESULT_OK, null);
+                                fragment.onActivityResult(REQUEST_CODE_PLACE, Activity.RESULT_OK, null);
                             }
                         }
                     }
@@ -299,23 +278,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.it_vitri:
                 Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
-                startActivityForResult(intent,REQUEST_CODE);
+                startActivityForResult(intent,REQUEST_CODE_PLACE);
                 drawerLayout.closeDrawer();
                 break;
             case R.id.it_wallpaper:
                 Intent intent1 = new Intent(MainActivity.this,WallpaperActivity.class);
-                startActivityForResult(intent1,REQUEST_CODE);
+                startActivityForResult(intent1,REQUEST_CODE_WALLPAPER);
                 break;
         }
     }
     public void setBackground(){
-        mContentLayout.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
-                +UtilPref.getInstance().getInt("wallpaperpos",0)));
-        mScrollNav.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
-                +UtilPref.getInstance().getInt("wallpaperpos",0)));
-    }
-    public void setBackground(String path){
-        mContentLayout.setBackground(Drawable.createFromPath(path));
-        mScrollNav.setBackground(Drawable.createFromPath(path));
+        if (UtilPref.getInstance().getInt("wallpaperpos",0)!=15){
+            mContentLayout.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
+                    +UtilPref.getInstance().getInt("wallpaperpos",0)));
+            mScrollNav.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
+                    +UtilPref.getInstance().getInt("wallpaperpos",0)));
+        } else {
+            String path = UtilPref.getInstance().getString("wallpaperpath","");
+            mContentLayout.setBackground(Drawable.createFromPath(path));
+            mScrollNav.setBackground(Drawable.createFromPath(path));
+        }
+
     }
 }

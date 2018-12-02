@@ -6,9 +6,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,18 +21,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.WallpaperAdapter;
 import com.example.hiephoangvan.weather.decoration.MyItemDecoration;
 import com.example.hiephoangvan.weather.models.Wallpaper;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,17 +34,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WallpaperActivity extends AppCompatActivity implements View.OnClickListener {
-    @BindView(R.id.recyclerViewWallpaper)
-    RecyclerView mRecyclerViewWallpaper;
-    @BindView(R.id.floatButton)
-    FloatingActionButton mFloatingActionButton;
-    @BindView(R.id.btnChoose)
-    Button mBtnChoose;
-    @BindView(R.id.btnExit)
-    Button mBtnExit;
-    WallpaperAdapter adapter;
-    List<Wallpaper> list;
-    private static final int PICK_IMAGE = 3;
+    @BindView(R.id.recyclerViewWallpaper) RecyclerView mRecyclerViewWallpaper;
+    @BindView(R.id.floatButton) FloatingActionButton mFloatingActionButton;
+    @BindView(R.id.btnChoose) Button mBtnChoose;
+    @BindView(R.id.btnExit) Button mBtnExit;
+    private WallpaperAdapter adapter;
+    private List<Wallpaper> list;
+    private final int PICK_IMAGE = 3;
     boolean mReadExternalPermissionGranted;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,7 +110,9 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnChoose:
-                MainActivity.instance.setBackground();
+                int pos = adapter.getWallpaperPos();
+                UtilPref.getInstance().setInt("wallpaperpos",pos);
+                setResult(Activity.RESULT_OK);
                 finish();
                 break;
             case R.id.btnExit:
@@ -141,7 +131,7 @@ public class WallpaperActivity extends AppCompatActivity implements View.OnClick
             String path = getPath(this,data.getData());
             UtilPref.getInstance().setInt("wallpaperpos", 15);
             UtilPref.getInstance().setString("wallpaperpath",path);
-            MainActivity.instance.setBackground(path);
+            setResult(Activity.RESULT_OK);
             finish();
         }
     }

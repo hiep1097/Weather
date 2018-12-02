@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.hiephoangvan.weather.models.Place;
+import com.example.hiephoangvan.weather.models.Places;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class PlaceDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addPlace(Place place) {
+    public void addPlace(Places place) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -52,8 +52,8 @@ public class PlaceDatabase extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Place> getAllPlaces() {
-        List<Place>  studentList = new ArrayList<>();
+    public List<Places> getAllPlaces() {
+        List<Places>  studentList = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_NAME;
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -61,7 +61,7 @@ public class PlaceDatabase extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         while(cursor.isAfterLast() == false) {
-            Place place = new Place(cursor.getInt(0), cursor.getString(1),
+            Places place = new Places(cursor.getInt(0), cursor.getString(1),
                     cursor.getString(2), cursor.getFloat(3), cursor.getFloat(4));
             studentList.add(place);
             cursor.moveToNext();

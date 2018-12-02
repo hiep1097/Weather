@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.models.Wallpaper;
+
 import java.util.List;
 
 public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.ViewHolder> {
@@ -30,6 +31,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.View
 
     public WallpaperAdapter(List<Wallpaper> list) {
         this.list = list;
+        wallpaperPos = UtilPref.getInstance().getInt("wallpaperpos",0);
     }
 
     @Override
@@ -37,7 +39,6 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.View
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_wallpaper, parent, false);
         context = parent.getContext();
-        wallpaperPos = UtilPref.getInstance().getInt("wallpaperpos",0);
         return new ViewHolder(view);
     }
 
@@ -53,7 +54,6 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.View
             @Override
             public void onClick(View v) {
                 wallpaperPos = position;
-                UtilPref.getInstance().setInt("wallpaperpos",position);
                 notifyDataSetChanged();
             }
         });
@@ -70,6 +70,10 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.View
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public int getWallpaperPos(){
+        return wallpaperPos;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
