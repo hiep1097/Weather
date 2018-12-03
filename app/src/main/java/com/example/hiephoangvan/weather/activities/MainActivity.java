@@ -73,15 +73,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private PlaceDetectionClient mPlaceDetectionClient;
     private PlaceDatabase placeDatabase;
-    private List<com.example.hiephoangvan.weather.models.Places> list = new ArrayList<>();
+    private List<com.example.hiephoangvan.weather.databases.Places> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setBackground();
-        placeDatabase = new PlaceDatabase(this);
-        list = placeDatabase.getAllPlaces();
+        list = PlaceDatabase.getInstance().placeDAO().getAllPlaces();
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
         if (!mLocationPermissionGranted) getLocationPermission();
         else setControl();
@@ -176,18 +175,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
                         Place place = likelyPlaces.get(0).getPlace();
                         Log.d("placeeeeeee",place.getLatLng().latitude+" "+place.getLatLng().longitude);
-                        com.example.hiephoangvan.weather.models.Places p
-                                = new com.example.hiephoangvan.weather.models.Places(list.size(), place.getName().toString()
+                        com.example.hiephoangvan.weather.databases.Places p
+                                = new com.example.hiephoangvan.weather.databases.Places(place.getName().toString()
                                 , place.getAddress().toString(), (float) place.getLatLng().latitude, (float) place.getLatLng().longitude);
                         boolean dupl = false;
-                        for (com.example.hiephoangvan.weather.models.Places pl: list){
+                        for (com.example.hiephoangvan.weather.databases.Places pl: list){
                             if (pl.getAddress().compareTo(p.getAddress())==0){
                                 dupl = true;
                                 break;
                             }
                         }
                         if (!dupl) {
-                            placeDatabase.addPlace(p);
+                            PlaceDatabase.getInstance().placeDAO().addPlace(p);
                             UtilPref.getInstance().setFloat("lat", p.getLat());
                             UtilPref.getInstance().setFloat("lon", p.getLon());
                             UtilPref.getInstance().setString("address", p.getAddress());

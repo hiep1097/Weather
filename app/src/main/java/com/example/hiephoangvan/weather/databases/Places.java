@@ -1,16 +1,18 @@
-package com.example.hiephoangvan.weather.models;
+package com.example.hiephoangvan.weather.databases;
 
-import java.io.Serializable;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
-public class Places implements Serializable {
-    private int id;
-    private String name;
-    private String address;
-    private float lat;
-    private float lon;
+@Entity(tableName = "place")
+public class Places {
+    @PrimaryKey(autoGenerate = true) private int id;
+    @ColumnInfo(name = "name") private String name;
+    @ColumnInfo(name = "address") private String address;
+    @ColumnInfo(name = "lat") private float lat;
+    @ColumnInfo(name = "lon") private float lon;
 
-    public Places(int id, String name, String address, float lat, float lon) {
-        this.id = id;
+    public Places(String name, String address, float lat, float lon) {
         this.name = name;
         this.address = address;
         this.lat = lat;

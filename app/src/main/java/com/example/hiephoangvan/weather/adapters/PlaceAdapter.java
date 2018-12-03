@@ -15,7 +15,7 @@ import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
-import com.example.hiephoangvan.weather.models.Places;
+import com.example.hiephoangvan.weather.databases.Places;
 
 import java.util.List;
 
@@ -37,7 +37,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_place, parent, false);
         context = parent.getContext();
-        placeDatabase = new PlaceDatabase(context);
         homePossition = UtilPref.getInstance().getInt("homePossition",0);
         return new ViewHolder(view);
     }
@@ -70,9 +69,9 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                                 mListener.onClick(v,position);
                                 return true;
                             case R.id.it_delete:
-                                placeDatabase.deletePlace(list.get(position).getId());
+                                PlaceDatabase.getInstance().placeDAO().deletePlace(list.get(position));
                                 list.clear();
-                                list.addAll(placeDatabase.getAllPlaces());
+                                list.addAll(PlaceDatabase.getInstance().placeDAO().getAllPlaces());
                                 notifyDataSetChanged();
                                 return true;
                             default:

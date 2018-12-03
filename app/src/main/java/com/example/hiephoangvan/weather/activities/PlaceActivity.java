@@ -22,7 +22,7 @@ import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.PlaceAdapter;
 import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
-import com.example.hiephoangvan.weather.models.Places;
+import com.example.hiephoangvan.weather.databases.Places;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -59,8 +59,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
-        placeDatabase = new PlaceDatabase(this);
-        list = placeDatabase.getAllPlaces();
+        list = PlaceDatabase.getInstance().placeDAO().getAllPlaces();
         placeAdapter = new PlaceAdapter(list, this::onClick);
         mRecyclerViewPlace.setAdapter(placeAdapter);
         mRecyclerViewPlace.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -92,7 +91,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
-                Places p = new Places(list.size(), place.getName().toString()
+                Places p = new Places(place.getName().toString()
                         , place.getAddress().toString(), (float) place.getLatLng().latitude,
                         (float) place.getLatLng().longitude);
                 boolean dupl = false;
@@ -103,7 +102,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
                     }
                 }
                 if (!dupl) {
-                    placeDatabase.addPlace(p);
+                    PlaceDatabase.getInstance().placeDAO().addPlace(p);
                     updateList();
                 }
                 updateList();
@@ -118,7 +117,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
 
     public void updateList() {
         this.list.clear();
-        this.list.addAll(placeDatabase.getAllPlaces());
+        this.list.addAll(PlaceDatabase.getInstance().placeDAO().getAllPlaces());
         placeAdapter.notifyDataSetChanged();
     }
 
