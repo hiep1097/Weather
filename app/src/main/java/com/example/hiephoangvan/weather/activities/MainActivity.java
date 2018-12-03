@@ -34,6 +34,7 @@ import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.databases.Datamanager;
+import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.models.Zone;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -56,8 +57,10 @@ import butterknife.ButterKnife;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.internal.observers.BlockingBaseObserver;
 import io.reactivex.schedulers.Schedulers;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
@@ -88,28 +91,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setBackground();
-       Datamanager.getInstance().getAllPlaces().subscribe(new FlowableSubscriber<List<com.example.hiephoangvan.weather.databases.Places>>() {
-           @Override
-           public void onSubscribe(Subscription s) {
-
-           }
-
-           @Override
-           public void onNext(List<com.example.hiephoangvan.weather.databases.Places> places) {
-               list.clear();
-               list.addAll(places);
-           }
-
-           @Override
-           public void onError(Throwable t) {
-
-           }
-
-           @Override
-           public void onComplete() {
-
-           }
-       });
+        PlaceDatabase.getInstance().placeDAO().getAllPlaces().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<com.example.hiephoangvan.weather.databases.Places>>() {
+            @Override
+            public void accept(List<com.example.hiephoangvan.weather.databases.Places> places) throws Exception {
+                list.clear();
+                list.addAll(places);
+            }
+        });
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
         if (!mLocationPermissionGranted) getLocationPermission();
         else setControl();

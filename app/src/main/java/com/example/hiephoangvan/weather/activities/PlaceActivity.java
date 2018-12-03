@@ -21,6 +21,7 @@ import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.PlaceAdapter;
 import com.example.hiephoangvan.weather.databases.Datamanager;
+import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
 import com.example.hiephoangvan.weather.databases.Places;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -38,7 +39,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     String TAG = "PLACE_ACTIVITY";
@@ -62,27 +66,12 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
-        Datamanager.getInstance().getAllPlaces().subscribe(new FlowableSubscriber<List<Places>>() {
+        PlaceDatabase.getInstance().placeDAO().getAllPlaces().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Places>>() {
             @Override
-            public void onSubscribe(Subscription s) {
-
-            }
-
-            @Override
-            public void onNext(List<Places> places) {
+            public void accept(List<com.example.hiephoangvan.weather.databases.Places> places) throws Exception {
                 list.clear();
                 list.addAll(places);
                 placeAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
             }
         });
         swapPlaceList();
