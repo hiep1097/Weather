@@ -70,9 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int REQUEST_CODE_PLACE = 1;
     private final int REQUEST_CODE_WALLPAPER = 5;
     private boolean mLocationPermissionGranted;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private PlaceDetectionClient mPlaceDetectionClient;
-    private PlaceDatabase placeDatabase;
     private List<com.example.hiephoangvan.weather.databases.Places> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                         if (!dupl) {
+                            p.setIsHome(1);
                             PlaceDatabase.getInstance().placeDAO().addPlace(p);
                             UtilPref.getInstance().setFloat("lat", p.getLat());
                             UtilPref.getInstance().setFloat("lon", p.getLon());

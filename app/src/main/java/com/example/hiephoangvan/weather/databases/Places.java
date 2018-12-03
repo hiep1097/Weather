@@ -11,6 +11,7 @@ public class Places {
     @ColumnInfo(name = "address") private String address;
     @ColumnInfo(name = "lat") private float lat;
     @ColumnInfo(name = "lon") private float lon;
+    @ColumnInfo(name = "is_home") private int isHome;
 
     public Places(String name, String address, float lat, float lon) {
         this.name = name;
@@ -57,5 +58,13 @@ public class Places {
 
     public void setLon(float lon) {
         this.lon = lon;
+    }
+
+    public int getIsHome() {
+        return isHome;
+    }
+
+    public void setIsHome(int isHome) {
+        this.isHome = isHome;
     }
 }

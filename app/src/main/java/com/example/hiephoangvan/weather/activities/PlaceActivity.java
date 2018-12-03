@@ -43,15 +43,12 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     @BindView(R.id.layoutplace) LinearLayout mLayoutPlace;
     private PlaceAdapter placeAdapter;
     private List<Places> list = new ArrayList<>();
-    private PlaceDatabase placeDatabase;
     private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 2;
-    public static PlaceActivity instance;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
         ButterKnife.bind(this);
-        instance = this;
         if (UtilPref.getInstance().getInt("wallpaperpos",0)!=15) setBackground();
         else setBackground(UtilPref.getInstance().getString("wallpaperpath",""));
         setSupportActionBar(mToolbar);
@@ -60,6 +57,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
         list = PlaceDatabase.getInstance().placeDAO().getAllPlaces();
+        swapPlaceList();
         placeAdapter = new PlaceAdapter(list, this::onClick);
         mRecyclerViewPlace.setAdapter(placeAdapter);
         mRecyclerViewPlace.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -69,6 +67,20 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
                 callPlaceAutocompleteActivityIntent();
             }
         });
+    }
+
+    public void swapPlaceList(){
+        int vt = -1;
+        for (int i=0;i<list.size();i++)
+            if (list.get(i).getIsHome()==1){
+                vt = i;
+                break;
+            }
+        if (vt!=-1){
+            com.example.hiephoangvan.weather.databases.Places p = list.get(0);
+            list.set(0,list.get(vt));
+            list.set(vt,p);
+        }
     }
 
     private void callPlaceAutocompleteActivityIntent() {
@@ -102,6 +114,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
                     }
                 }
                 if (!dupl) {
+                    p.setIsHome(0);
                     PlaceDatabase.getInstance().placeDAO().addPlace(p);
                     updateList();
                 }
