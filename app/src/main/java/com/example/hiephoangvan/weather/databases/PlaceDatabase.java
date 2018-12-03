@@ -13,7 +13,6 @@ public abstract class PlaceDatabase extends RoomDatabase {
     public static PlaceDatabase getInstance(){
         if (instance==null){
             instance = Room.databaseBuilder(App.getContext(),PlaceDatabase.class,"place-database")
-                            .allowMainThreadQueries()
                             .build();
         }
         return instance;

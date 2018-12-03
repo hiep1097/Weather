@@ -13,7 +13,8 @@ import android.widget.TextView;
 
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
-import com.example.hiephoangvan.weather.databases.PlaceDatabase;
+import com.example.hiephoangvan.weather.application.App;
+import com.example.hiephoangvan.weather.databases.Datamanager;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
 import com.example.hiephoangvan.weather.databases.Places;
 
@@ -26,17 +27,17 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
     private List<Places> list;
     int homePossition=0;
     private Context context;
-    PlaceDatabase placeDatabase;
+    private LayoutInflater layoutInflater;
     public PlaceAdapter(List<Places> list, ItemOnClick mListener) {
         this.list = list;
         this.mListener = mListener;
+        context = App.getContext();
+        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_place, parent, false);
-        context = parent.getContext();
         homePossition = UtilPref.getInstance().getInt("homePossition",0);
         return new ViewHolder(view);
     }
@@ -69,9 +70,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                                 mListener.onClick(v,position);
                                 return true;
                             case R.id.it_delete:
-                                PlaceDatabase.getInstance().placeDAO().deletePlace(list.get(position));
+                                Datamanager.getInstance().deletePlace(list.get(position));
                                 list.clear();
-                                list.addAll(PlaceDatabase.getInstance().placeDAO().getAllPlaces());
                                 notifyDataSetChanged();
                                 return true;
                             default:

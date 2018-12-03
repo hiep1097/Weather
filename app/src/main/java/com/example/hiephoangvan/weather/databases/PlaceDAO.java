@@ -7,12 +7,15 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+
 @Dao
 public interface PlaceDAO {
     @Query("SELECT * FROM place")
-    List<Places> getAllPlaces();
+    Flowable<List<Places>> getAllPlaces();
     @Insert
-    void addPlace(Places... places);
+    void addPlace(Places places);
     @Delete
     void deletePlace(Places places);
 }

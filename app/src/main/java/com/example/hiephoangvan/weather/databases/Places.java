@@ -7,10 +7,10 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "place")
 public class Places {
     @PrimaryKey(autoGenerate = true) private int id;
-    @ColumnInfo(name = "name") private String name;
-    @ColumnInfo(name = "address") private String address;
-    @ColumnInfo(name = "lat") private float lat;
-    @ColumnInfo(name = "lon") private float lon;
+    private String name;
+    private String address;
+    private float lat;
+    private float lon;
     @ColumnInfo(name = "is_home") private int isHome;
 
     public Places(String name, String address, float lat, float lon) {

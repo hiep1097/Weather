@@ -30,6 +30,7 @@
         android:scrollHorizontally="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:textColor="@android:color/white"
         />
     <ImageView
         android:id="@+id/btn_more"

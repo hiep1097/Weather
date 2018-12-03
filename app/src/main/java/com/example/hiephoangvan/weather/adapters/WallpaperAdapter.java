@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.example.hiephoangvan.weather.Utils.UtilPref;
+import com.example.hiephoangvan.weather.application.App;
 import com.example.hiephoangvan.weather.models.Wallpaper;
 
 import java.util.List;
@@ -28,17 +29,19 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.View
     private List<Wallpaper> list;
     private Context context;
     private int wallpaperPos;
+    private LayoutInflater layoutInflater;
 
     public WallpaperAdapter(List<Wallpaper> list) {
         this.list = list;
         wallpaperPos = UtilPref.getInstance().getInt("wallpaperpos",0);
+        context = App.getContext();
+        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_wallpaper, parent, false);
-        context = parent.getContext();
         return new ViewHolder(view);
     }
 

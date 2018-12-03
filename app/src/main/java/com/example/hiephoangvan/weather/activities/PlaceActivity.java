@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.PlaceAdapter;
-import com.example.hiephoangvan.weather.databases.PlaceDatabase;
+import com.example.hiephoangvan.weather.databases.Datamanager;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
 import com.example.hiephoangvan.weather.databases.Places;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -28,11 +28,17 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+
+import org.reactivestreams.Subscription;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.FlowableSubscriber;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     String TAG = "PLACE_ACTIVITY";
@@ -56,7 +62,29 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
-        list = PlaceDatabase.getInstance().placeDAO().getAllPlaces();
+        Datamanager.getInstance().getAllPlaces().subscribe(new FlowableSubscriber<List<Places>>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+
+            }
+
+            @Override
+            public void onNext(List<Places> places) {
+                list.clear();
+                list.addAll(places);
+                placeAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
         swapPlaceList();
         placeAdapter = new PlaceAdapter(list, this::onClick);
         mRecyclerViewPlace.setAdapter(placeAdapter);
@@ -67,6 +95,11 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
                 callPlaceAutocompleteActivityIntent();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void swapPlaceList(){
@@ -115,7 +148,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
                 }
                 if (!dupl) {
                     p.setIsHome(0);
-                    PlaceDatabase.getInstance().placeDAO().addPlace(p);
+                    Datamanager.getInstance().addPlace(p);
                     updateList();
                 }
                 updateList();
@@ -129,8 +162,6 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
     }
 
     public void updateList() {
-        this.list.clear();
-        this.list.addAll(PlaceDatabase.getInstance().placeDAO().getAllPlaces());
         placeAdapter.notifyDataSetChanged();
     }
 

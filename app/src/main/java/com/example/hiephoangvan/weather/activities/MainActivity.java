@@ -33,7 +33,7 @@ import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
-import com.example.hiephoangvan.weather.databases.PlaceDatabase;
+import com.example.hiephoangvan.weather.databases.Datamanager;
 import com.example.hiephoangvan.weather.models.Zone;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -41,6 +41,9 @@ import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import org.reactivestreams.Subscription;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,8 +53,11 @@ import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.internal.observers.BlockingBaseObserver;
 import io.reactivex.schedulers.Schedulers;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
@@ -82,7 +88,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setBackground();
-        list = PlaceDatabase.getInstance().placeDAO().getAllPlaces();
+       Datamanager.getInstance().getAllPlaces().subscribe(new FlowableSubscriber<List<com.example.hiephoangvan.weather.databases.Places>>() {
+           @Override
+           public void onSubscribe(Subscription s) {
+
+           }
+
+           @Override
+           public void onNext(List<com.example.hiephoangvan.weather.databases.Places> places) {
+               list.clear();
+               list.addAll(places);
+           }
+
+           @Override
+           public void onError(Throwable t) {
+
+           }
+
+           @Override
+           public void onComplete() {
+
+           }
+       });
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
         if (!mLocationPermissionGranted) getLocationPermission();
         else setControl();
@@ -189,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         if (!dupl) {
                             p.setIsHome(1);
-                            PlaceDatabase.getInstance().placeDAO().addPlace(p);
+                            Datamanager.getInstance().addPlace(p);
                             UtilPref.getInstance().setFloat("lat", p.getLat());
                             UtilPref.getInstance().setFloat("lon", p.getLon());
                             UtilPref.getInstance().setString("address", p.getAddress());

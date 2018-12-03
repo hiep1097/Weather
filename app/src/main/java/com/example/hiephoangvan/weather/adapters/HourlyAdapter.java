@@ -29,17 +29,17 @@ import butterknife.ButterKnife;
 import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_1;
 
 public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder> {
-
     private List<Lists> list;
     private Context context;
+    private LayoutInflater layoutInflater;
     public HourlyAdapter(List<Lists> list, Context context) {
         this.list = list;
         this.context = context;
+        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_hourly, parent, false);
         return new ViewHolder(view);
     }
