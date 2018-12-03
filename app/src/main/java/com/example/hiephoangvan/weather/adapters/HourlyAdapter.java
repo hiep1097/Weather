@@ -26,6 +26,8 @@ import java.util.TimeZone;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_1;
+
 public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder> {
 
     private List<Lists> list;
@@ -44,7 +46,7 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String gioPhut = UtilDate.getInstance().getDateFormat1()
+        String gioPhut = UtilDate.getInstance().getDateFormat(FORMAT_1)
                 .format(new Date(list.get(position).getDt()*1000L)).split(" ")[1];
         StringBuilder sb = new StringBuilder(gioPhut);
         sb.delete(5,8);
@@ -62,13 +64,13 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
 
         holder.mHourlyHumidity.setText(" "+list.get(position).getMain().getHumidity()+" %");
         //layout thu ngay
-        String ngayThang = UtilDate.getInstance().getDateFormat1()
+        String ngayThang = UtilDate.getInstance().getDateFormat(FORMAT_1)
                 .format(new Date(list.get(position).getDt()*1000L)).split(" ")[0];
-        Log.d("ngaythangg",UtilDate.getInstance().getDateFormat1()
+        Log.d("ngaythangg",UtilDate.getInstance().getDateFormat(FORMAT_1)
                 .format(new Date(list.get(position).getDt()*1000L)));
         String ngayThangBefore = null;
         if (position!=0) {
-            ngayThangBefore = UtilDate.getInstance().getDateFormat1()
+            ngayThangBefore = UtilDate.getInstance().getDateFormat(FORMAT_1)
                     .format(new Date(list.get(position-1).getDt()*1000L)).split(" ")[0];
         }
         if (position==0 || (position!=0 && ngayThang.compareTo(ngayThangBefore)!=0)){

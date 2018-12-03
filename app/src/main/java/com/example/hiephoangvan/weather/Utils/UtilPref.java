@@ -5,26 +5,24 @@ import android.content.SharedPreferences;
 import com.example.hiephoangvan.weather.application.App;
 
 public class UtilPref {
-    private final static String PREF_FILE = "WEATHER";
+    private final String PREF_FILE = "WEATHER";
     private static UtilPref instance;
-    private static SharedPreferences settings;
-    private static SharedPreferences.Editor editor;
+    private SharedPreferences settings;
+    private SharedPreferences.Editor editor;
     private UtilPref(){
-
+        settings = App.getContext().getSharedPreferences(PREF_FILE,
+                App.getContext().MODE_PRIVATE);
+        editor = settings.edit();
     }
     public static UtilPref getInstance(){
         if (instance==null){
             instance = new UtilPref();
-            settings = App.getContext().getSharedPreferences(PREF_FILE,
-                    App.getContext().MODE_PRIVATE);
-            editor = settings.edit();
         }
         return instance;
     }
 
     public void setString(String key, String value){
-        editor.putString(key, value);
-        editor.apply();
+        editor.putString(key, value).apply();
     }
 
     /**
@@ -33,8 +31,7 @@ public class UtilPref {
      * @param value - Value for the key
      */
     public void setInt(String key, int value){
-        editor.putInt(key, value);
-        editor.apply();
+        editor.putInt(key, value).apply();
     }
 
     /**
@@ -43,8 +40,7 @@ public class UtilPref {
      * @param value
      */
     public void setFloat(String key, float value){
-        editor.putFloat(key, value);
-        editor.apply();
+        editor.putFloat(key, value).apply();
     }
 
     public float getFloat(String key,float defValue){
@@ -56,8 +52,7 @@ public class UtilPref {
      * @param value - Value for the key
      */
     public void setBoolean(String key, boolean value){
-        editor.putBoolean(key, value);
-        editor.apply();
+        editor.putBoolean(key, value).apply();
     }
 
     /**

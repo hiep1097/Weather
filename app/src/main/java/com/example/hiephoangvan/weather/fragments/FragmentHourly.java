@@ -31,13 +31,17 @@ import com.example.hiephoangvan.weather.models.Lists;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_1;
 
 public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.tv_currently_temp) TextView mCurrentTemp;
@@ -65,9 +69,13 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
 
     public void getCurrentWeather(){
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-        Observable<CurrentlyWeather> observable = service.getCurrentWeather(
-                UtilPref.getInstance().getFloat("lat",0),
-                UtilPref.getInstance().getFloat("lon",0),UtilPref.getInstance().getString("unit","metric"),"vi", Config.API_KEY);
+        Map<String, String> data = new HashMap<>();
+        data.put("lat",UtilPref.getInstance().getFloat("lat",0)+"");
+        data.put("lon",UtilPref.getInstance().getFloat("lon",0)+"");
+        data.put("units",UtilPref.getInstance().getString("unit","metric"));
+        data.put("lang","vi");
+        data.put("APPID",Config.API_KEY);
+        Observable<CurrentlyWeather> observable = service.getCurrentWeather(data);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateView(response),
@@ -76,9 +84,13 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
 
     public void getHourlyWeather(){
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-        Observable<HourlyWeather> observable = service.getHourlyWeather(
-                UtilPref.getInstance().getFloat("lat",0),
-                UtilPref.getInstance().getFloat("lon",0),UtilPref.getInstance().getString("unit","metric"),"vi", Config.API_KEY);
+        Map<String, String> data = new HashMap<>();
+        data.put("lat",UtilPref.getInstance().getFloat("lat",0)+"");
+        data.put("lon",UtilPref.getInstance().getFloat("lon",0)+"");
+        data.put("units",UtilPref.getInstance().getString("unit","metric"));
+        data.put("lang","vi");
+        data.put("APPID",Config.API_KEY);
+        Observable<HourlyWeather> observable = service.getHourlyWeather(data);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response->updateList(response),
@@ -92,7 +104,7 @@ public class FragmentHourly extends Fragment implements SwipeRefreshLayout.OnRef
         StringBuilder sb = new StringBuilder(currentlyWeather.getWeather().get(0).getDescription());
         sb.setCharAt(0,Character.toUpperCase(sb.charAt(0)));
         mCurrentDescription.setText(sb.toString());
-        mCurrentTime.setText("Cập nhật gần nhất: "+UtilDate.getInstance().getDateFormat1()
+        mCurrentTime.setText("Cập nhật gần nhất: "+UtilDate.getInstance().getDateFormat(FORMAT_1)
                 .format(new Date(currentlyWeather.getDt()*1000L)));
         }
 

@@ -42,7 +42,10 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
@@ -205,9 +208,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void getTimeZone(){
         Service service = RetrofitInstance.getRetrofitInstance2().create(Service.class);
-        Observable<Zone> observable = service.getTimeZone(
-                Math.round(UtilPref.getInstance().getFloat("lat",0)),
-                Math.round(UtilPref.getInstance().getFloat("lon",0)), "hiep1097");
+        Map<String, String> data = new HashMap<>();
+        data.put("lat",Math.round(UtilPref.getInstance().getFloat("lat",0))+"");
+        data.put("lng",Math.round(UtilPref.getInstance().getFloat("lon",0))+"");
+        data.put("username","hiep1097");
+        Observable<Zone> observable = service.getTimeZone(data);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BlockingBaseObserver<Zone>() {

@@ -28,13 +28,19 @@ import com.example.hiephoangvan.weather.models.Lists;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_1;
+import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_2;
+import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_3;
 
 public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.tv_currently_temp)
@@ -83,10 +89,13 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
 
     public void getCurrentWeather() {
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-        Observable<CurrentlyWeather> observable = service.getCurrentWeather(
-                UtilPref.getInstance().getFloat("lat", 0),
-                UtilPref.getInstance().getFloat("lon", 0), UtilPref.getInstance().getString("unit", "metric"),
-                "vi", Config.API_KEY);
+        Map<String, String> data = new HashMap<>();
+        data.put("lat",UtilPref.getInstance().getFloat("lat",0)+"");
+        data.put("lon",UtilPref.getInstance().getFloat("lon",0)+"");
+        data.put("units",UtilPref.getInstance().getString("unit","metric"));
+        data.put("lang","vi");
+        data.put("APPID",Config.API_KEY);
+        Observable<CurrentlyWeather> observable = service.getCurrentWeather(data);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> updateView(response),
@@ -101,11 +110,11 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
         sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
         mCurrentDescription.setText(sb.toString());
         mCurrentSunsetSunrise.setText(" Bình minh/Hoàng hôn  " +
-                UtilDate.getInstance().getDateFormat2()
+                UtilDate.getInstance().getDateFormat(FORMAT_2)
                         .format(new Date(currentlyWeather.getSys().getSunrise() * 1000L)) + "/"
-                + UtilDate.getInstance().getDateFormat2()
+                + UtilDate.getInstance().getDateFormat(FORMAT_2)
                 .format(new Date(currentlyWeather.getSys().getSunset() * 1000L)));
-        mCurrentTime.setText("Cập nhật gần nhất: " + UtilDate.getInstance().getDateFormat1()
+        mCurrentTime.setText("Cập nhật gần nhất: " + UtilDate.getInstance().getDateFormat(FORMAT_1)
                 .format(new Date(currentlyWeather.getDt() * 1000L)));
         mCurrentHumidity.setText(currentlyWeather.getMain().getHumidity() + " %");
         mCurrentCloud.setText(currentlyWeather.getClouds().getAll() + " %");
@@ -132,9 +141,13 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
 
     public void getHourlyWeather() {
         Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-        Observable<HourlyWeather> observable = service.getHourlyWeather(
-                UtilPref.getInstance().getFloat("lat", 0),
-                UtilPref.getInstance().getFloat("lon", 0), UtilPref.getInstance().getString("unit", "metric"), "vi", Config.API_KEY);
+        Map<String, String> data = new HashMap<>();
+        data.put("lat",UtilPref.getInstance().getFloat("lat",0)+"");
+        data.put("lon",UtilPref.getInstance().getFloat("lon",0)+"");
+        data.put("units",UtilPref.getInstance().getString("unit","metric"));
+        data.put("lang","vi");
+        data.put("APPID",Config.API_KEY);
+        Observable<HourlyWeather> observable = service.getHourlyWeather(data);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> updateTempMaxMin(response),
@@ -145,7 +158,7 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     public void updateTempMaxMin(HourlyWeather hourlyWeather) {
         this.list.clear();
         this.list.addAll(hourlyWeather.getList());
-        String time = UtilDate.getInstance().getDateFormat3()
+        String time = UtilDate.getInstance().getDateFormat(FORMAT_3)
                 .format(new Date(currentlyWeather.getDt() * 1000L));
         long tempMax = Math.round(currentlyWeather.getMain().getTempMax());
         long tempMin = Math.round(currentlyWeather.getMain().getTempMin());
