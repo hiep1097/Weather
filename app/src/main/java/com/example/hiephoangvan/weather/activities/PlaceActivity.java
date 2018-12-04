@@ -29,18 +29,11 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-
-import org.reactivestreams.Subscription;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.FlowableSubscriber;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -66,9 +59,14 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
-        PlaceDatabase.getInstance().placeDAO().getAllPlaces().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Places>>() {
+        PlaceDatabase.getInstance().placeDAO()
+                .getAllPlaces()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<List<Places>>() {
             @Override
-            public void accept(List<com.example.hiephoangvan.weather.databases.Places> places) throws Exception {
+            public void accept(List<com.example.hiephoangvan.weather.databases.Places> places)
+                    throws Exception {
                 list.clear();
                 list.addAll(places);
                 placeAdapter.notifyDataSetChanged();
@@ -84,11 +82,6 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
                 callPlaceAutocompleteActivityIntent();
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     public void swapPlaceList(){
@@ -138,9 +131,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
                 if (!dupl) {
                     p.setIsHome(0);
                     Datamanager.getInstance().addPlace(p);
-                    updateList();
                 }
-                updateList();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 Log.i(TAG, status.getStatusMessage());
@@ -150,10 +141,6 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         }
     }
 
-    public void updateList() {
-        placeAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onClick(View view, int position) {
         UtilPref.getInstance().setFloat("lat", list.get(position).getLat());
@@ -161,6 +148,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         UtilPref.getInstance().setString("address", list.get(position).getAddress());
         toolbarTitle.setText(list.get(position).getAddress());
         setResult(Activity.RESULT_OK);
+        Log.d("LATT",list.get(position).getLat()+" "+list.get(position).getLon());
         finish();
     }
 

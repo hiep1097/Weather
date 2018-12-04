@@ -91,9 +91,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setBackground();
-        PlaceDatabase.getInstance().placeDAO().getAllPlaces().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<com.example.hiephoangvan.weather.databases.Places>>() {
+        PlaceDatabase.getInstance()
+                .placeDAO()
+                .getAllPlaces()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<List<com.example.hiephoangvan.weather.databases.Places>>() {
             @Override
-            public void accept(List<com.example.hiephoangvan.weather.databases.Places> places) throws Exception {
+            public void accept(List<com.example.hiephoangvan.weather.databases.Places> places)
+                    throws Exception {
                 list.clear();
                 list.addAll(places);
             }
@@ -204,6 +210,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         if (!dupl) {
                             p.setIsHome(1);
+                            for (int i=0;i<list.size();i++){
+                                if (list.get(i).getIsHome()==1){
+                                    com.example.hiephoangvan.weather.databases.Places places = list.get(i);
+                                    places.setIsHome(0);
+                                    Datamanager.getInstance().updatePlace(places);
+                                    break;
+                                }
+                            }
                             Datamanager.getInstance().addPlace(p);
                             UtilPref.getInstance().setFloat("lat", p.getLat());
                             UtilPref.getInstance().setFloat("lon", p.getLon());

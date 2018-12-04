@@ -31,12 +31,14 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
     public PlaceAdapter(List<Places> list, ItemOnClick mListener) {
         this.list = list;
         this.mListener = mListener;
-        context = App.getContext();
-        layoutInflater = LayoutInflater.from(context);
+//        context = App.getContext();
+//        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
+        layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.item_place, parent, false);
         homePossition = UtilPref.getInstance().getInt("homePossition",0);
         return new ViewHolder(view);
@@ -70,6 +72,10 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                                 mListener.onClick(v,position);
                                 return true;
                             case R.id.it_delete:
+                                if (homePossition==position){
+                                    homePossition=0;
+                                    UtilPref.getInstance().setInt("homePossition",0);
+                                }
                                 Datamanager.getInstance().deletePlace(list.get(position));
                                 list.clear();
                                 notifyDataSetChanged();

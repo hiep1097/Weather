@@ -15,11 +15,8 @@ import io.reactivex.schedulers.Schedulers;
 public class Datamanager {
     private PlaceDatabase db;
     private static Datamanager instance;
-    List<Places> list;
-    Flowable<List<Places>> observable;
     public Datamanager() {
         db = PlaceDatabase.getInstance();
-        list = new ArrayList<>();
     }
 
     public static Datamanager getInstance() {
@@ -29,39 +26,11 @@ public class Datamanager {
         return instance;
     }
 
-    public Flowable<List<Places>> getAllPlaces() {
-        Completable.fromAction(new Action() {
-            @Override
-            public void run() throws Exception {
-                observable= db.placeDAO().getAllPlaces();
-            }
-        }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-        return observable;
-    }
-
     public void addPlace(Places place) {
         Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
                 db.placeDAO().addPlace(place);
-
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -88,6 +57,32 @@ public class Datamanager {
             @Override
             public void run() throws Exception {
                 db.placeDAO().deletePlace(place);
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    public void updatePlace(Places place) {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                db.placeDAO().updatePlace(place);
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
