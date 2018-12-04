@@ -77,7 +77,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                                     UtilPref.getInstance().setInt("homePossition",0);
                                 }
                                 Datamanager.getInstance().deletePlace(list.get(position));
-                                list.clear();
                                 notifyDataSetChanged();
                                 return true;
                             default:

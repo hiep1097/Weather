@@ -26,6 +26,12 @@ public class Datamanager {
         return instance;
     }
 
+    public Flowable<List<Places>> getAllPlaces(){
+        return db
+                .placeDAO()
+                .getAllPlaces();
+    }
+
     public void addPlace(Places place) {
         Completable.fromAction(new Action() {
             @Override

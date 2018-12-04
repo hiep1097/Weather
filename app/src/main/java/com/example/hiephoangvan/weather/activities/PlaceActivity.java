@@ -59,8 +59,7 @@ public class PlaceActivity extends AppCompatActivity implements ItemOnClick {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
-        PlaceDatabase.getInstance().placeDAO()
-                .getAllPlaces()
+      Datamanager.getInstance().getAllPlaces()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<List<Places>>() {

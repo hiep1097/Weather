@@ -91,10 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setBackground();
-        PlaceDatabase.getInstance()
-                .placeDAO()
-                .getAllPlaces()
-                .observeOn(AndroidSchedulers.mainThread())
+
+                Datamanager.getInstance().getAllPlaces().observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<List<com.example.hiephoangvan.weather.databases.Places>>() {
             @Override
