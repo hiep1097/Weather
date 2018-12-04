@@ -1,90 +1,64 @@
 package com.example.hiephoangvan.weather.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.Config;
 import com.example.hiephoangvan.weather.Utils.UtilDate;
+import com.example.hiephoangvan.weather.Utils.UtilDrawable;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.models.CurrentlyWeather;
 import com.example.hiephoangvan.weather.models.HourlyWeather;
 import com.example.hiephoangvan.weather.models.Lists;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-
 import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_1;
 import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_2;
 import static com.example.hiephoangvan.weather.Utils.Config.FORMAT_3;
 
-public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    @BindView(R.id.tv_currently_temp)
-    TextView mCurrentTemp;
-    @BindView(R.id.image_weather)
-    ImageView mCurrentImageWeather;
-    @BindView(R.id.tv_description)
-    TextView mCurrentDescription;
-    @BindView(R.id.tv_temp_min)
-    TextView mCurrentTempMin;
-    @BindView(R.id.tv_temp_max)
-    TextView mCurrentTempMax;
-    @BindView(R.id.tv_sunset_sunrise)
-    TextView mCurrentSunsetSunrise;
-    @BindView(R.id.tv_currently_time)
-    TextView mCurrentTime;
-    @BindView(R.id.tv_value_humidity)
-    TextView mCurrentHumidity;
-    @BindView(R.id.tv_value_maychephu)
-    TextView mCurrentCloud;
-    @BindView(R.id.tv_value_tamnhin)
-    TextView mCurrentVisibility;
-    @BindView(R.id.tv_value_pressure)
-    TextView mCurrentPressure;
-    @BindView(R.id.tv_value_rain)
-    TextView mCurrentRain;
-    @BindView(R.id.tv_wind_deg)
-    TextView mCurrentWindDeg;
-    @BindView(R.id.tv_wind_speed)
-    TextView mCurrentWindSpeed;
-    @BindView(R.id.refreshlayoutCurrently)
-    SwipeRefreshLayout mRefreshLayout;
-    List<Lists> list = new ArrayList<>();
+public class FragmentCurrently extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+    @BindView(R.id.tv_currently_temp) TextView mCurrentTemp;
+    @BindView(R.id.image_weather) ImageView mCurrentImageWeather;
+    @BindView(R.id.tv_description) TextView mCurrentDescription;
+    @BindView(R.id.tv_temp_min) TextView mCurrentTempMin;
+    @BindView(R.id.tv_temp_max) TextView mCurrentTempMax;
+    @BindView(R.id.tv_sunset_sunrise) TextView mCurrentSunsetSunrise;
+    @BindView(R.id.tv_currently_time) TextView mCurrentTime;
+    @BindView(R.id.tv_value_humidity) TextView mCurrentHumidity;
+    @BindView(R.id.tv_value_maychephu) TextView mCurrentCloud;
+    @BindView(R.id.tv_value_tamnhin) TextView mCurrentVisibility;
+    @BindView(R.id.tv_value_pressure) TextView mCurrentPressure;
+    @BindView(R.id.tv_value_rain) TextView mCurrentRain;
+    @BindView(R.id.tv_wind_deg) TextView mCurrentWindDeg;
+    @BindView(R.id.tv_wind_speed) TextView mCurrentWindSpeed;
+    @BindView(R.id.refreshlayoutCurrently) SwipeRefreshLayout mRefreshLayout;
+    private List<Lists> list = new ArrayList<>();
     private CurrentlyWeather currentlyWeather;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_currently, container, false);
-        ButterKnife.bind(this, view);
-        getCurrentWeather();
-        getHourlyWeather();
+    public void setView() {
         mRefreshLayout.setOnRefreshListener(this::onRefresh);
-        return view;
+    }
+
+    @Override
+    public int layoutFragment() {
+        return R.layout.fragment_currently;
     }
 
     public void getCurrentWeather() {
@@ -105,7 +79,7 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
     public void updateView(CurrentlyWeather currentlyWeather) {
         this.currentlyWeather = currentlyWeather;
         mCurrentTemp.setText(Math.round(currentlyWeather.getMain().getTemp()) + "");
-        mCurrentImageWeather.setImageDrawable(getDrawable(getContext(), "ic_" + currentlyWeather.getWeather().get(0).getIcon()));
+        mCurrentImageWeather.setImageDrawable(UtilDrawable.getInstance().getDrawable("ic_" + currentlyWeather.getWeather().get(0).getIcon()));
         StringBuilder sb = new StringBuilder(currentlyWeather.getWeather().get(0).getDescription());
         sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
         mCurrentDescription.setText(sb.toString());
@@ -183,19 +157,5 @@ public class FragmentCurrently extends Fragment implements SwipeRefreshLayout.On
         getCurrentWeather();
         getHourlyWeather();
         mRefreshLayout.setRefreshing(false);
-    }
-
-    public Drawable getDrawable(Context context, String name) {
-        Resources resources = context.getResources();
-        final int resourceId = resources.getIdentifier(name, "drawable",
-                context.getPackageName());
-        Drawable drawable = resources.getDrawable(resourceId);
-        return drawable;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        onRefresh();
     }
 }

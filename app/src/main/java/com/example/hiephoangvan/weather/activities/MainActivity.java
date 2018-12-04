@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -34,7 +33,6 @@ import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.databases.Datamanager;
-import com.example.hiephoangvan.weather.databases.PlaceDatabase;
 import com.example.hiephoangvan.weather.models.Zone;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -42,31 +40,22 @@ import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import org.reactivestreams.Subscription;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.observers.BlockingBaseObserver;
 import io.reactivex.schedulers.Schedulers;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.content_layout) FrameLayout mContentLayout;
     @BindView(R.id.tabLayout) TabLayout mTabLayout;
     @BindView(R.id.viewPager) ViewPager mViewPager;
@@ -85,29 +74,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private PlaceDetectionClient mPlaceDetectionClient;
     private List<com.example.hiephoangvan.weather.databases.Places> list = new ArrayList<>();
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        setBackground();
 
-                Datamanager.getInstance().getAllPlaces().observeOn(AndroidSchedulers.mainThread())
+    @Override
+    public void setView() {
+        setBackground();
+        Datamanager.getInstance().getAllPlaces().observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<List<com.example.hiephoangvan.weather.databases.Places>>() {
-            @Override
-            public void accept(List<com.example.hiephoangvan.weather.databases.Places> places)
-                    throws Exception {
-                list.clear();
-                list.addAll(places);
-            }
-        });
+                    @Override
+                    public void accept(List<com.example.hiephoangvan.weather.databases.Places> places)
+                            throws Exception {
+                        list.clear();
+                        list.addAll(places);
+                    }
+                });
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
         if (!mLocationPermissionGranted) getLocationPermission();
         else setControl();
     }
 
-    public void setControl(){
+    @Override
+    public int layoutActivity() {
+        return R.layout.activity_main;
+    }
+
+    public void setControl() {
         mFragmentManager = getSupportFragmentManager();
         mViewpagerAdapter = new ViewpagerAdapter(mFragmentManager);
         mViewPager.setAdapter(mViewpagerAdapter);
@@ -118,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 R.string.navigation_drawer_close);
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
-        toolbarTitle.setText(UtilPref.getInstance().getString("address",""));
+        toolbarTitle.setText(UtilPref.getInstance().getString("address", ""));
         toolbarTitle.setSelected(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
@@ -127,8 +118,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toggleSwitchListener();
     }
 
-    public void toggleSwitchListener(){
-        if (UtilPref.getInstance().getString("unit","metric").compareTo("metric")==0){
+    public void toggleSwitchListener() {
+        if (UtilPref.getInstance().getString("unit", "metric").compareTo("metric") == 0) {
             mItemTemp.setCheckedTogglePosition(0);
         } else {
             mItemTemp.setCheckedTogglePosition(1);
@@ -136,11 +127,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mItemTemp.setOnToggleSwitchChangeListener(new BaseToggleSwitch.OnToggleSwitchChangeListener() {
             @Override
             public void onToggleSwitchChangeListener(int position, boolean isChecked) {
-                if (position==0){
-                    UtilPref.getInstance().setString("unit","metric");
+                if (position == 0) {
+                    UtilPref.getInstance().setString("unit", "metric");
 
                 } else {
-                    UtilPref.getInstance().setString("unit","imperial");
+                    UtilPref.getInstance().setString("unit", "imperial");
                 }
                 for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                     if (fragment != null) {
@@ -163,9 +154,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id==R.id.it_location){
-            Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
-            startActivityForResult(intent,REQUEST_CODE_PLACE);
+        if (id == R.id.it_location) {
+            Intent intent = new Intent(MainActivity.this, PlaceActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_PLACE);
         }
         return false;
     }
@@ -173,19 +164,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE_PLACE) {
-            if(resultCode == Activity.RESULT_OK) {
-                toolbarTitle.setText(UtilPref.getInstance().getString("address",""));
+        if (requestCode == REQUEST_CODE_PLACE) {
+            if (resultCode == Activity.RESULT_OK) {
+                toolbarTitle.setText(UtilPref.getInstance().getString("address", ""));
                 getTimeZone();
             } else {
             }
-        } else if (requestCode == REQUEST_CODE_WALLPAPER){
-            if(resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_CODE_WALLPAPER) {
+            if (resultCode == Activity.RESULT_OK) {
                 setBackground();
             } else {
             }
         }
     }
+
     private void getDeviceLocation() {
         try {
             if (mLocationPermissionGranted) {
@@ -195,21 +187,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
                         PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
                         Place place = likelyPlaces.get(0).getPlace();
-                        Log.d("placeeeeeee",place.getLatLng().latitude+" "+place.getLatLng().longitude);
+                        Log.d("placeeeeeee", place.getLatLng().latitude + " " + place.getLatLng().longitude);
                         com.example.hiephoangvan.weather.databases.Places p
                                 = new com.example.hiephoangvan.weather.databases.Places(place.getName().toString()
                                 , place.getAddress().toString(), (float) place.getLatLng().latitude, (float) place.getLatLng().longitude);
                         boolean dupl = false;
-                        for (com.example.hiephoangvan.weather.databases.Places pl: list){
-                            if (pl.getAddress().compareTo(p.getAddress())==0){
+                        for (com.example.hiephoangvan.weather.databases.Places pl : list) {
+                            if (pl.getAddress().compareTo(p.getAddress()) == 0) {
                                 dupl = true;
                                 break;
                             }
                         }
                         if (!dupl) {
                             p.setIsHome(1);
-                            for (int i=0;i<list.size();i++){
-                                if (list.get(i).getIsHome()==1){
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).getIsHome() == 1) {
                                     com.example.hiephoangvan.weather.databases.Places places = list.get(i);
                                     places.setIsHome(0);
                                     Datamanager.getInstance().updatePlace(places);
@@ -233,20 +225,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void getTimeZone(){
+    public void getTimeZone() {
         Service service = RetrofitInstance.getRetrofitInstance2().create(Service.class);
         Map<String, String> data = new HashMap<>();
-        data.put("lat",UtilPref.getInstance().getFloat("lat",0)+"");
-        data.put("lng",UtilPref.getInstance().getFloat("lon",0)+"");
-        data.put("username","hiep1097");
+        data.put("lat", UtilPref.getInstance().getFloat("lat", 0) + "");
+        data.put("lng", UtilPref.getInstance().getFloat("lon", 0) + "");
+        data.put("username", "hiep1097");
         Observable<Zone> observable = service.getTimeZone(data);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BlockingBaseObserver<Zone>() {
                     @Override
                     public void onNext(Zone zone) {
-                        UtilPref.getInstance().setString("timezone",zone.getTimezoneId());
-                        Log.d("timezoneeeeeeee",UtilPref.getInstance().getString("timezone",""));
+                        UtilPref.getInstance().setString("timezone", zone.getTimezoneId());
+                        Log.d("timezoneeeeeeee", UtilPref.getInstance().getString("timezone", ""));
                         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                             if (fragment != null) {
                                 fragment.onActivityResult(REQUEST_CODE_PLACE, Activity.RESULT_OK, null);
@@ -261,15 +253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
     }
 
-    /**
-     * Prompts the user for permission to use the device location.
-     */
     private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -282,9 +266,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /**
-     * Handles the result of the request for location permissions.
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
@@ -298,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mLocationPermissionGranted = true;
                     getDeviceLocation();
                 } else {
-                    Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -306,26 +287,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.it_vitri:
-                Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
-                startActivityForResult(intent,REQUEST_CODE_PLACE);
+                Intent intent = new Intent(MainActivity.this, PlaceActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_PLACE);
                 drawerLayout.closeDrawer();
                 break;
             case R.id.it_wallpaper:
-                Intent intent1 = new Intent(MainActivity.this,WallpaperActivity.class);
-                startActivityForResult(intent1,REQUEST_CODE_WALLPAPER);
+                Intent intent1 = new Intent(MainActivity.this, WallpaperActivity.class);
+                startActivityForResult(intent1, REQUEST_CODE_WALLPAPER);
                 break;
         }
     }
-    public void setBackground(){
-        if (UtilPref.getInstance().getInt("wallpaperpos",0)!=15){
+
+    public void setBackground() {
+        if (UtilPref.getInstance().getInt("wallpaperpos", 0) != 15) {
             mContentLayout.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
-                    +UtilPref.getInstance().getInt("wallpaperpos",0)));
+                    + UtilPref.getInstance().getInt("wallpaperpos", 0)));
             mScrollNav.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
-                    +UtilPref.getInstance().getInt("wallpaperpos",0)));
+                    + UtilPref.getInstance().getInt("wallpaperpos", 0)));
         } else {
-            String path = UtilPref.getInstance().getString("wallpaperpath","");
+            String path = UtilPref.getInstance().getString("wallpaperpath", "");
             mContentLayout.setBackground(Drawable.createFromPath(path));
             mScrollNav.setBackground(Drawable.createFromPath(path));
         }
