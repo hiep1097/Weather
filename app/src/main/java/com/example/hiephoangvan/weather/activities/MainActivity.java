@@ -238,8 +238,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void getTimeZone(){
         Service service = RetrofitInstance.getRetrofitInstance2().create(Service.class);
         Map<String, String> data = new HashMap<>();
-        data.put("lat",Math.round(UtilPref.getInstance().getFloat("lat",0))+"");
-        data.put("lng",Math.round(UtilPref.getInstance().getFloat("lon",0))+"");
+        data.put("lat",UtilPref.getInstance().getFloat("lat",0)+"");
+        data.put("lng",UtilPref.getInstance().getFloat("lon",0)+"");
         data.put("username","hiep1097");
         Observable<Zone> observable = service.getTimeZone(data);
         observable.subscribeOn(Schedulers.io())

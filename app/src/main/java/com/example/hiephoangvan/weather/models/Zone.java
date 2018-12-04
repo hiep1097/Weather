@@ -10,16 +10,16 @@ public class Zone {
     private String sunrise;
     @SerializedName("lng")
     @Expose
-    private Integer lng;
+    private float lng;
     @SerializedName("countryCode")
     @Expose
     private String countryCode;
     @SerializedName("gmtOffset")
     @Expose
-    private Integer gmtOffset;
+    private float gmtOffset;
     @SerializedName("rawOffset")
     @Expose
-    private Integer rawOffset;
+    private float rawOffset;
     @SerializedName("sunset")
     @Expose
     private String sunset;
@@ -28,7 +28,7 @@ public class Zone {
     private String timezoneId;
     @SerializedName("dstOffset")
     @Expose
-    private Integer dstOffset;
+    private float dstOffset;
     @SerializedName("countryName")
     @Expose
     private String countryName;
@@ -37,7 +37,7 @@ public class Zone {
     private String time;
     @SerializedName("lat")
     @Expose
-    private Integer lat;
+    private float lat;
 
     public String getSunrise() {
         return sunrise;
@@ -47,11 +47,11 @@ public class Zone {
         this.sunrise = sunrise;
     }
 
-    public Integer getLng() {
+    public float getLng() {
         return lng;
     }
 
-    public void setLng(Integer lng) {
+    public void setLng(float lng) {
         this.lng = lng;
     }
 
@@ -63,19 +63,19 @@ public class Zone {
         this.countryCode = countryCode;
     }
 
-    public Integer getGmtOffset() {
+    public float getGmtOffset() {
         return gmtOffset;
     }
 
-    public void setGmtOffset(Integer gmtOffset) {
+    public void setGmtOffset(float gmtOffset) {
         this.gmtOffset = gmtOffset;
     }
 
-    public Integer getRawOffset() {
+    public float getRawOffset() {
         return rawOffset;
     }
 
-    public void setRawOffset(Integer rawOffset) {
+    public void setRawOffset(float rawOffset) {
         this.rawOffset = rawOffset;
     }
 
@@ -95,11 +95,11 @@ public class Zone {
         this.timezoneId = timezoneId;
     }
 
-    public Integer getDstOffset() {
+    public float getDstOffset() {
         return dstOffset;
     }
 
-    public void setDstOffset(Integer dstOffset) {
+    public void setDstOffset(float dstOffset) {
         this.dstOffset = dstOffset;
     }
 
@@ -119,11 +119,11 @@ public class Zone {
         this.time = time;
     }
 
-    public Integer getLat() {
+    public float getLat() {
         return lat;
     }
 
-    public void setLat(Integer lat) {
+    public void setLat(float lat) {
         this.lat = lat;
     }
 
