@@ -2,6 +2,7 @@ package com.example.hiephoangvan.weather.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.example.hiephoangvan.weather.Utils.UtilDrawable;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.PlaceAdapter;
 import com.example.hiephoangvan.weather.databases.Datamanager;
+import com.example.hiephoangvan.weather.databinding.ActivityPlaceBinding;
 import com.example.hiephoangvan.weather.interfaces.ItemOnClick;
 import com.example.hiephoangvan.weather.databases.Places;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -35,21 +37,22 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PlaceActivity extends BaseActivity implements ItemOnClick {
     String TAG = "PLACE_ACTIVITY";
-    @BindView(R.id.recyclerViewPlace) RecyclerView mRecyclerViewPlace;
-    @BindView(R.id.btn_add_place) Button mButtonAddPlace;
-    @BindView(R.id.tv_title_toolbar) TextView toolbarTitle;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.layoutplace) LinearLayout mLayoutPlace;
     private PlaceAdapter placeAdapter;
     private List<Places> list = new ArrayList<>();
     private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 2;
+    private ActivityPlaceBinding binding;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.setContentView(this,layoutActivity());
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void setView() {
         if (UtilPref.getInstance().getInt("wallpaperpos",0)!=15) setBackground();
         else setBackground(UtilPref.getInstance().getString("wallpaperpath",""));
-        setSupportActionBar(mToolbar);
-        toolbarTitle.setVisibility(View.GONE);
+        setSupportActionBar(binding.toolbars.toolbar);
+        binding.toolbars.tvTitleToolbar.setVisibility(View.GONE);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Chỉnh sửa vị trí");
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -67,9 +70,9 @@ public class PlaceActivity extends BaseActivity implements ItemOnClick {
                 });
         swapPlaceList();
         placeAdapter = new PlaceAdapter(list, this,this::onClick);
-        mRecyclerViewPlace.setAdapter(placeAdapter);
-        mRecyclerViewPlace.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mButtonAddPlace.setOnClickListener(new View.OnClickListener() {
+        binding.recyclerViewPlace.setAdapter(placeAdapter);
+        binding.recyclerViewPlace.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        binding.btnAddPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 callPlaceAutocompleteActivityIntent();
@@ -143,7 +146,7 @@ public class PlaceActivity extends BaseActivity implements ItemOnClick {
         UtilPref.getInstance().setFloat("lat", list.get(position).getLat());
         UtilPref.getInstance().setFloat("lon", list.get(position).getLon());
         UtilPref.getInstance().setString("address", list.get(position).getAddress());
-        toolbarTitle.setText(list.get(position).getAddress());
+        binding.toolbars.tvTitleToolbar.setText(list.get(position).getAddress());
         setResult(Activity.RESULT_OK);
         finish();
     }
@@ -153,10 +156,10 @@ public class PlaceActivity extends BaseActivity implements ItemOnClick {
         super.onBackPressed();
     }
     public void setBackground(){
-        mLayoutPlace.setBackground(UtilDrawable.getInstance()
+        binding.layoutplace.setBackground(UtilDrawable.getInstance()
                 .getDrawable("wallpaper"+UtilPref.getInstance().getInt("wallpaperpos",0)));
     }
     public void setBackground(String path){
-        mLayoutPlace.setBackground(Drawable.createFromPath(path));
+        binding.layoutplace.setBackground(Drawable.createFromPath(path));
     }
 }

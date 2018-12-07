@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.example.hiephoangvan.weather.R;
 import com.example.hiephoangvan.weather.Utils.UtilPath;
 import com.example.hiephoangvan.weather.Utils.UtilPref;
 import com.example.hiephoangvan.weather.adapters.WallpaperAdapter;
+import com.example.hiephoangvan.weather.databinding.ActivityWallpaperBinding;
 import com.example.hiephoangvan.weather.decoration.MyItemDecoration;
 import com.example.hiephoangvan.weather.models.Wallpaper;
 import java.util.ArrayList;
@@ -25,14 +27,17 @@ import java.util.List;
 import butterknife.BindView;
 
 public class WallpaperActivity extends BaseActivity implements View.OnClickListener {
-    @BindView(R.id.recyclerViewWallpaper) RecyclerView mRecyclerViewWallpaper;
-    @BindView(R.id.floatButton) FloatingActionButton mFloatingActionButton;
-    @BindView(R.id.btnChoose) Button mBtnChoose;
-    @BindView(R.id.btnExit) Button mBtnExit;
     private WallpaperAdapter adapter;
     private List<Wallpaper> list;
     private final int PICK_IMAGE = 3;
-    boolean mReadExternalPermissionGranted;
+    private boolean mReadExternalPermissionGranted;
+    private ActivityWallpaperBinding binding;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.setContentView(this,layoutActivity());
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void setView() {
@@ -42,12 +47,12 @@ public class WallpaperActivity extends BaseActivity implements View.OnClickListe
             list.add(wallpaper);
         }
         adapter = new WallpaperAdapter(list,this);
-        mRecyclerViewWallpaper.setAdapter(adapter);
-        mRecyclerViewWallpaper.setLayoutManager(new GridLayoutManager(this, 2));
-        mRecyclerViewWallpaper.addItemDecoration(new MyItemDecoration(this, R.dimen.item_offset));
-        mBtnChoose.setOnClickListener(this::onClick);
-        mBtnExit.setOnClickListener(this::onClick);
-        mFloatingActionButton.setOnClickListener(this::onClick);
+        binding.recyclerViewWallpaper.setAdapter(adapter);
+        binding.recyclerViewWallpaper.setLayoutManager(new GridLayoutManager(this, 2));
+        binding.recyclerViewWallpaper.addItemDecoration(new MyItemDecoration(this, R.dimen.item_offset));
+        binding.btnChoose.setOnClickListener(this::onClick);
+        binding.btnExit.setOnClickListener(this::onClick);
+        binding.floatButton.setOnClickListener(this::onClick);
     }
 
     @Override

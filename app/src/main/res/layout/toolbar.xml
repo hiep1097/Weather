@@ -1,26 +1,30 @@
-<android.support.v7.widget.Toolbar
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@color/white10"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:itemTextColor="#000"
-    app:titleTextColor="#fff"
     >
-    <TextView
-        android:id="@+id/tv_title_toolbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ha Noi Viet Nam"
-        android:textColor="#fff"
-        android:textSize="@dimen/_15ssp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:marqueeRepeatLimit ="marquee_forever"
-        android:scrollHorizontally="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        />
-</android.support.v7.widget.Toolbar>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white10"
+        app:itemTextColor="#000"
+        app:titleTextColor="#fff"
+        >
+        <TextView
+            android:id="@+id/tv_title_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ha Noi Viet Nam"
+            android:textColor="#fff"
+            android:textSize="@dimen/_15ssp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit ="marquee_forever"
+            android:scrollHorizontally="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            />
+    </android.support.v7.widget.Toolbar>
+</layout>

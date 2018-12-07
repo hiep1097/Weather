@@ -20,7 +20,6 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(layoutFragment(),container,false);
         unbinder = ButterKnife.bind(this,view);
-        setView();
         return view;
 
     }
@@ -28,6 +27,7 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setView();
         getCurrentWeather();
         getHourlyWeather();
     }

@@ -1,52 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorPrimary"
     >
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewWallpaper"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/lnBottom"
-        android:layout_marginBottom="@dimen/_10sdp"
+        android:orientation="vertical"
+        android:background="@color/colorPrimary"
         >
-    </android.support.v7.widget.RecyclerView>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatButton"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_60sdp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/lnBottom"
-        android:layout_marginBottom="@dimen/_20sdp"
-        android:src="@drawable/ic_add"
-        />
-    <LinearLayout
-        android:id="@+id/lnBottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
-        <Button
-            android:id="@+id/btnChoose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lựa chọn"
-            android:layout_weight="1"
-            android:background="@drawable/bg_btn_wallpaper"
-            android:layout_margin="@dimen/_10sdp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewWallpaper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/lnBottom"
+            android:layout_marginBottom="@dimen/_10sdp"
+            >
+        </android.support.v7.widget.RecyclerView>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatButton"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/lnBottom"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:src="@drawable/ic_add"
             />
-        <Button
-            android:id="@+id/btnExit"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/lnBottom"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thoát"
-            android:layout_weight="1"
-            android:background="@drawable/bg_btn_wallpaper"
-            android:layout_margin="@dimen/_10sdp"
-            />
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            >
+            <Button
+                android:id="@+id/btnChoose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lựa chọn"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_wallpaper"
+                android:layout_margin="@dimen/_10sdp"
+                />
+            <Button
+                android:id="@+id/btnExit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thoát"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_wallpaper"
+                android:layout_margin="@dimen/_10sdp"
+                />
+        </LinearLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

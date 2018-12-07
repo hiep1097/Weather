@@ -13,7 +13,6 @@ public abstract class BaseAdapter<M,V extends BaseViewHolder<M>> extends Recycle
     protected List<M> mData;
     protected Context context;
     protected LayoutInflater layoutInflater;
-
     public BaseAdapter(List<M> data, Context context) {
         this.mData = data;
         this.context = context;

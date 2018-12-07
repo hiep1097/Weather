@@ -3,8 +3,10 @@ package com.example.hiephoangvan.weather.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -14,7 +16,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +34,7 @@ import com.example.hiephoangvan.weather.adapters.ViewpagerAdapter;
 import com.example.hiephoangvan.weather.api.RetrofitInstance;
 import com.example.hiephoangvan.weather.api.Service;
 import com.example.hiephoangvan.weather.databases.Datamanager;
+import com.example.hiephoangvan.weather.databinding.ActivityMainBinding;
 import com.example.hiephoangvan.weather.models.Zone;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -56,16 +58,6 @@ import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
-    @BindView(R.id.content_layout) FrameLayout mContentLayout;
-    @BindView(R.id.tabLayout) TabLayout mTabLayout;
-    @BindView(R.id.viewPager) ViewPager mViewPager;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.tv_title_toolbar) TextView toolbarTitle;
-    @BindView(R.id.drawer) DuoDrawerLayout drawerLayout;
-    @BindView(R.id.it_vitri) LinearLayout mItemLocation;
-    @BindView(R.id.it_temp) ToggleSwitch mItemTemp;
-    @BindView(R.id.it_wallpaper) LinearLayout mItemWallpaper;
-    @BindView(R.id.mScrollNav) ScrollView mScrollNav;
     private FragmentManager mFragmentManager;
     private ViewpagerAdapter mViewpagerAdapter;
     private final int REQUEST_CODE_PLACE = 1;
@@ -74,6 +66,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private PlaceDetectionClient mPlaceDetectionClient;
     private List<com.example.hiephoangvan.weather.databases.Places> list = new ArrayList<>();
+    private ActivityMainBinding binding;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.setContentView(this,layoutActivity());
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void setView() {
@@ -101,30 +99,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void setControl() {
         mFragmentManager = getSupportFragmentManager();
         mViewpagerAdapter = new ViewpagerAdapter(mFragmentManager);
-        mViewPager.setAdapter(mViewpagerAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
-        setSupportActionBar(mToolbar);
-        DuoDrawerToggle drawerToggle = new DuoDrawerToggle(this, drawerLayout, mToolbar,
+        binding.viewPager.setAdapter(mViewpagerAdapter);
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        setSupportActionBar(binding.toolbars.toolbar);
+        DuoDrawerToggle drawerToggle = new DuoDrawerToggle(this, binding.drawer, binding.toolbars.toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
-        drawerLayout.setDrawerListener(drawerToggle);
+        binding.drawer.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
-        toolbarTitle.setText(UtilPref.getInstance().getString("address", ""));
-        toolbarTitle.setSelected(true);
+        binding.toolbars.tvTitleToolbar.setText(UtilPref.getInstance().getString("address", ""));
+        binding.toolbars.tvTitleToolbar.setSelected(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
-        mItemLocation.setOnClickListener(this::onClick);
-        mItemWallpaper.setOnClickListener(this::onClick);
+        binding.itVitri.setOnClickListener(this::onClick);
+        binding.itWallpaper.setOnClickListener(this::onClick);
         toggleSwitchListener();
     }
 
     public void toggleSwitchListener() {
         if (UtilPref.getInstance().getString("unit", "metric").compareTo("metric") == 0) {
-            mItemTemp.setCheckedTogglePosition(0);
+            binding.itTemp.setCheckedTogglePosition(0);
         } else {
-            mItemTemp.setCheckedTogglePosition(1);
+            binding.itTemp.setCheckedTogglePosition(1);
         }
-        mItemTemp.setOnToggleSwitchChangeListener(new BaseToggleSwitch.OnToggleSwitchChangeListener() {
+        binding.itTemp.setOnToggleSwitchChangeListener(new BaseToggleSwitch.OnToggleSwitchChangeListener() {
             @Override
             public void onToggleSwitchChangeListener(int position, boolean isChecked) {
                 if (position == 0) {
@@ -166,7 +164,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_PLACE) {
             if (resultCode == Activity.RESULT_OK) {
-                toolbarTitle.setText(UtilPref.getInstance().getString("address", ""));
+                binding.toolbars.tvTitleToolbar.setText(UtilPref.getInstance().getString("address", ""));
                 getTimeZone();
             } else {
             }
@@ -213,7 +211,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             UtilPref.getInstance().setFloat("lon", p.getLon());
                             UtilPref.getInstance().setString("address", p.getAddress());
                             getTimeZone();
-                            toolbarTitle.setText(p.getAddress());
+                            binding.toolbars.tvTitleToolbar.setText(p.getAddress());
                         }
                         likelyPlaces.release();
                     }
@@ -291,7 +289,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.it_vitri:
                 Intent intent = new Intent(MainActivity.this, PlaceActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_PLACE);
-                drawerLayout.closeDrawer();
+                binding.drawer.closeDrawer();
                 break;
             case R.id.it_wallpaper:
                 Intent intent1 = new Intent(MainActivity.this, WallpaperActivity.class);
@@ -302,14 +300,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public void setBackground() {
         if (UtilPref.getInstance().getInt("wallpaperpos", 0) != 15) {
-            mContentLayout.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
+            binding.contentLayout.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
                     + UtilPref.getInstance().getInt("wallpaperpos", 0)));
-            mScrollNav.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
+            binding.mScrollNav.setBackground(UtilDrawable.getInstance().getDrawable("wallpaper"
                     + UtilPref.getInstance().getInt("wallpaperpos", 0)));
         } else {
             String path = UtilPref.getInstance().getString("wallpaperpath", "");
-            mContentLayout.setBackground(Drawable.createFromPath(path));
-            mScrollNav.setBackground(Drawable.createFromPath(path));
+            binding.contentLayout.setBackground(Drawable.createFromPath(path));
+            binding.mScrollNav.setBackground(Drawable.createFromPath(path));
         }
 
     }
